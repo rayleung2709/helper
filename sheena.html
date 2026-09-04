@@ -238,7 +238,7 @@ async function loadData() {
     state = await fetchRemote();
     const t = (state.meta && state.meta.lastModified) ? new Date(state.meta.lastModified).toLocaleString('en-HK') : '—';
     bar.className = 'synced';
-    bar.innerHTML = '✅ Last updated: ' + t + '<a onclick="loadData()">↻ Refresh</a>';
+    bar.innerHTML = '✅ Updated completed <a onclick="loadData()">↻ Refresh</a>';
     renderAll();
   } catch(e) {
     bar.className = 'err';
