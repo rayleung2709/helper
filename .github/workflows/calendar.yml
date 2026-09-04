@@ -8,10 +8,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: update-calendar
-  cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,21 +26,14 @@ jobs:
           THEO_ICS_URL: ${{ secrets.THEO_ICS_URL }}
         run: node scripts/build-calendar.mjs
 
-- name: Commit if changed
+      - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # 先保住剛 build 好嘅檔案，再同步到 remote 最新 main
-          cp calendar.json /tmp/calendar.json
-          git fetch origin main
-          git reset --hard origin/main
-          cp /tmp/calendar.json calendar.json
-
           git add calendar.json
           if git diff --cached --quiet; then
             echo "No changes"
-            exit 0
+          else
+            git commit -m "chore: update school calendar"
+            git push
           fi
-          git commit -m "chore: update school calendar"
-          git push origin main
