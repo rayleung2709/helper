@@ -1360,5 +1360,8 @@
       "category": "salary",
       "amount": 5100
     }
-  ]
+  ],
+  "meta": {
+    "lastModified": "2026-09-04T13:28:06.436Z"
+  }
 }
