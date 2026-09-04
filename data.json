@@ -1235,6 +1235,13 @@
       "amount": 4021.4
     },
     {
+      "id": 176,
+      "date": "2026-06-07",
+      "item": "Salary Advanced (June salary paid 7.6.2026)",
+      "category": "advance",
+      "amount": 4021.4
+    },
+    {
       "id": 177,
       "date": "2026-06-19",
       "item": "Dragon Boat Festival Bonus",
@@ -1286,9 +1293,9 @@
     {
       "id": 184,
       "date": "2026-07-22",
-      "item": "Salary Advanced from August",
-      "category": "Salary",
-      "amount": 2000
+      "item": "Salary Advanced",
+      "category": "advance",
+      "amount": 500
     },
     {
       "id": 185,
@@ -1352,9 +1359,16 @@
       "item": "Salary for September (Advanced)",
       "category": "salary",
       "amount": 5100
+    },
+    {
+      "id": 1788529326896,
+      "date": "2026-09-04",
+      "item": "Salary Advanced (paid with August)",
+      "category": "advance",
+      "amount": 5100
     }
   ],
   "meta": {
-    "lastModified": "2026-09-04T13:37:06.436Z"
+    "lastModified": "2026-09-04T13:42:13.050Z"
   }
 }
