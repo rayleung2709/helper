@@ -65,6 +65,9 @@
   }
   .btn:hover { background: var(--primary-dark); }
   .btn-accent { background: var(--accent); }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-outline:hover { background: var(--primary-light); }
+  .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
   table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
   th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--border); }
   th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; }
@@ -113,6 +116,18 @@
   .sig-line { border-top: 1.5px solid var(--text); padding-top: 6px; font-size: 0.82rem; }
   .ack { margin-top: 24px; font-size: 0.85rem; font-style: italic; }
 
+  /* Currency toggle */
+  .cur-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .cur-wrap h2 { margin-bottom: 0; }
+  .rate-note { font-size: 0.72rem; color: var(--muted); margin-left: 6px; }
+  /* School calendar */
+  .event { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  .event:last-child { border-bottom: none; }
+  .event .d { min-width: 105px; color: var(--primary-dark); font-weight: 600; white-space: nowrap; }
+  .event.past { opacity: 0.45; }
+  footer { text-align: center; font-size: 0.72rem; color: var(--muted); padding: 16px; }
+  footer a { color: inherit; }
+
   @media print {
     body * { visibility: hidden; }
     #receiptArea, #receiptArea * { visibility: visible; }
@@ -140,6 +155,7 @@
   <button class="active" onclick="showTab('payroll', this)">💰 Payroll</button>
   <button onclick="showTab('receipt', this)">🧾 Receipt</button>
   <button onclick="showTab('leave', this)">🏖️ Holidays</button>
+  <button onclick="showTab('calendar', this)">🏫 School</button>
 </nav>
 
 <main>
@@ -147,7 +163,13 @@
 <!-- ============ PAYROLL TAB ============ -->
 <div id="tab-payroll" class="tab active">
   <div class="card">
-    <h2>📊 Yearly Summary (Net Paid)</h2>
+    <div class="cur-wrap">
+      <h2>📊 Yearly Summary (Net Paid)</h2>
+      <div>
+        <button class="btn btn-sm btn-outline" id="curBtn" style="margin:0;" onclick="cycleCurrency()">💱 HKD</button>
+        <span class="rate-note" id="rateNote"></span>
+      </div>
+    </div>
     <div class="year-grid" id="yearSummary"></div>
   </div>
 
@@ -189,7 +211,24 @@
   </div>
 </div>
 
+<!-- ============ SCHOOL CALENDAR TAB ============ -->
+<div id="tab-calendar" class="tab">
+  <div class="card">
+    <h2>🏫 School Calendar</h2>
+    <label style="display:flex;align-items:center;gap:6px;">
+      <input type="checkbox" id="showPast" style="width:auto;margin:0;" onchange="renderCalendar()"> Show past events
+    </label>
+    <div id="calendarList" style="margin-top:10px;"></div>
+    <p class="hint" style="margin-top:10px;">Auto-updated weekly from <code>calendar.json</code> by GitHub Actions.</p>
+  </div>
+</div>
+
 </main>
+
+<footer>
+  Exchange rates: <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a>
+  · Salary is paid in HKD; PHP / USD shown for reference only.
+</footer>
 
 <script>
 // ================= DATA =================
@@ -252,6 +291,41 @@ async function loadData() {
 
 // ================= HELPERS =================
 function fmt(n) { return n.toLocaleString('en-HK', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+// ---- Display currency (HKD is the real paid currency; PHP/USD reference only) ----
+const CURRENCIES = ['HKD', 'PHP', 'USD'];
+const SYMBOL = { HKD: 'HK$', PHP: '₱', USD: 'US$' };
+let currency = localStorage.getItem('displayCurrency') || 'HKD';
+if (!CURRENCIES.includes(currency)) currency = 'HKD';
+let rates = { HKD: 1, PHP: 7.3, USD: 0.128 };   // fallback if API unreachable
+let ratesLive = false;
+
+async function loadRates() {
+  try {
+    const res = await fetch('https://open.er-api.com/v6/latest/HKD');
+    const j = await res.json();
+    if (j.result === 'success' && j.rates && j.rates.PHP && j.rates.USD) {
+      rates = { HKD: 1, PHP: j.rates.PHP, USD: j.rates.USD };
+      ratesLive = true;
+    }
+  } catch (e) { /* keep fallback */ }
+  updateCurrencyUI();
+  if (state) renderEntries();
+}
+function cycleCurrency() {
+  currency = CURRENCIES[(CURRENCIES.indexOf(currency) + 1) % CURRENCIES.length];
+  localStorage.setItem('displayCurrency', currency);
+  updateCurrencyUI();
+  if (state) renderEntries();
+}
+function updateCurrencyUI() {
+  document.getElementById('curBtn').textContent = '💱 ' + currency;
+  document.getElementById('rateNote').textContent = currency === 'HKD' ? '' :
+    `1 HKD ≈ ${rates[currency].toFixed(3)} ${currency}${ratesLive ? '' : ' (offline rate)'}`;
+}
+function sym() { return SYMBOL[currency]; }
+function fmtC(n) { return fmt(n * rates[currency]); }   // converted for display
+
 function monthKey(d) { return d.slice(0,7); }
 function monthName(key) {
   const [y,m] = key.split('-');
@@ -300,7 +374,7 @@ function renderYearSummary() {
   const keys = Object.keys(years).sort().reverse();
   if (!keys.length) { el.innerHTML = '<div class="empty">No data yet</div>'; return; }
   el.innerHTML = keys.map(y =>
-    `<div class="stat"><div class="num">$${fmt(years[y])}</div><div class="lbl">${y} Total Paid</div></div>`).join('');
+    `<div class="stat"><div class="num">${sym()}${fmtC(years[y])}</div><div class="lbl">${y} Total Paid</div></div>`).join('');
 }
 function renderEntries() {
   renderYearSummary();
@@ -316,19 +390,19 @@ function renderEntries() {
       <div class="month-header">
         <h3>${monthName(k)}</h3>
         <div class="month-summary">
-          Earned: HK$${fmt(t.earned)}
-          ${t.advance ? ` &nbsp;|&nbsp; Advance: <span class="neg">−HK$${fmt(t.advance)}</span>` : ''}
-          &nbsp;|&nbsp; Net: <strong>HK$${fmt(t.payable)}</strong>
+          Earned: ${sym()}${fmtC(t.earned)}
+          ${t.advance ? ` &nbsp;|&nbsp; Advance: <span class="neg">−${sym()}${fmtC(t.advance)}</span>` : ''}
+          &nbsp;|&nbsp; Net: <strong>${sym()}${fmtC(t.payable)}</strong>
         </div>
       </div>
-      <table><thead><tr><th>Date</th><th>Item</th><th class="amount">Amount</th></tr></thead><tbody>`;
+      <table><thead><tr><th>Date</th><th>Item</th><th class="amount">Amount (${currency})</th></tr></thead><tbody>`;
     entries.forEach(e => {
       const isNeg = e.category === 'advance' || e.category === 'deduction' || e.amount < 0;
       const badgeClass = e.category === 'advance' ? 'adv' : (e.category === 'deduction' ? 'ded' : '');
       html += `<tr>
         <td>${e.date}</td>
         <td>${e.item}<span class="badge ${badgeClass}">${CAT_LABEL[e.category] || e.category}</span></td>
-        <td class="amount ${isNeg ? 'neg' : ''}">${e.category==='advance'||e.category==='deduction' ? '−' : ''}${fmt(Math.abs(e.amount))}</td>
+        <td class="amount ${isNeg ? 'neg' : ''}">${e.category==='advance'||e.category==='deduction' ? '−' : ''}${fmtC(Math.abs(e.amount))}</td>
       </tr>`;
     });
     html += '</tbody></table></div>';
@@ -336,7 +410,7 @@ function renderEntries() {
   el.innerHTML = html;
 }
 
-// ================= RECEIPT =================
+// ================= RECEIPT (always HKD) =================
 function buildMonthOptions() {
   const keys = Object.keys(groupByMonth()).sort().reverse();
   const sel = document.getElementById('receiptMonth');
@@ -409,6 +483,38 @@ function renderLeave() {
     `<tr style="${d < today0 ? 'opacity:0.45;' : ''}"><td>${d}${d < today0 ? ' ✔' : ''}</td><td>${n}</td></tr>`).join('');
 }
 
+// ================= SCHOOL CALENDAR =================
+let calendarEvents = null;
+async function loadCalendar() {
+  const el = document.getElementById('calendarList');
+  try {
+    const res = await fetch('calendar.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const j = await res.json();
+    const list = Array.isArray(j) ? j : (j.events || j.items || []);
+    calendarEvents = list.map(ev => ({
+      date:  String(ev.start || ev.date || ev.dtstart || '').slice(0,10),
+      end:   String(ev.end || ev.dtend || '').slice(0,10),
+      title: ev.title || ev.summary || ev.name || ''
+    })).filter(ev => ev.date).sort((a,b) => a.date.localeCompare(b.date));
+    renderCalendar();
+  } catch (e) {
+    calendarEvents = [];
+    el.innerHTML = `<div class="empty">calendar.json not available (${e.message})</div>`;
+  }
+}
+function renderCalendar() {
+  if (!calendarEvents) return;
+  const showPast = document.getElementById('showPast').checked;
+  const today = todayStr();
+  const list = calendarEvents.filter(ev => showPast || (ev.end || ev.date) >= today);
+  document.getElementById('calendarList').innerHTML = list.length
+    ? list.map(ev => `<div class="event ${(ev.end || ev.date) < today ? 'past' : ''}">
+        <div class="d">${ev.date}${ev.end && ev.end !== ev.date ? ' → ' + ev.end : ''}</div>
+        <div>${ev.title}</div></div>`).join('')
+    : '<div class="empty">No upcoming events</div>';
+}
+
 // ================= RENDER ALL / INIT =================
 function renderAll() {
   renderEntries();
@@ -419,7 +525,10 @@ function renderAll() {
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') loadData();
 });
+updateCurrencyUI();
 loadData();
+loadRates();
+loadCalendar();
 </script>
 </body>
 </html>
