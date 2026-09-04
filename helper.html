@@ -1,0 +1,964 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helper Payroll & Holiday Tracker</title>
+<style>
+  :root {
+    --primary: #0f766e;
+    --primary-dark: #115e59;
+    --primary-light: #ccfbf1;
+    --accent: #f59e0b;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --danger: #dc2626;
+    --border: #e2e8f0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; padding: 20px 16px; text-align: center;
+  }
+  header h1 { font-size: 1.4rem; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+  #syncBar {
+    padding: 8px 14px; font-size: 0.82rem; text-align: center;
+    background: #e2e8f0; color: var(--muted);
+  }
+  #syncBar.synced { background: #d1fae5; color: #065f46; }
+  #syncBar.dirty { background: #fef3c7; color: #92400e; }
+  #syncBar.norem { background: #e0f2fe; color: #075985; }
+  nav {
+    display: flex; background: var(--card); border-bottom: 2px solid var(--border);
+    position: sticky; top: 0; z-index: 10; overflow-x: auto;
+  }
+  nav button {
+    flex: 1; padding: 12px 8px; border: none; background: none; cursor: pointer;
+    font-size: 0.9rem; color: var(--muted); border-bottom: 3px solid transparent;
+    white-space: nowrap; font-weight: 600;
+  }
+  nav button.active { color: var(--primary); border-bottom-color: var(--primary); }
+  main { max-width: 900px; margin: 0 auto; padding: 16px; }
+  .card {
+    background: var(--card); border-radius: 12px; padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px;
+  }
+  .card h2 { font-size: 1.05rem; margin-bottom: 12px; color: var(--primary-dark); }
+  label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+  input, select {
+    width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 0.95rem; margin-bottom: 12px; background: white;
+  }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 130px; }
+  .btn {
+    display: inline-block; padding: 10px 18px; border: none; border-radius: 8px;
+    background: var(--primary); color: white; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; margin: 4px 4px 4px 0;
+  }
+  .btn:hover { background: var(--primary-dark); }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-outline:hover { background: var(--primary-light); }
+  .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+  .btn-danger { background: white; color: var(--danger); border: 1px solid #fecaca; }
+  .btn-accent { background: var(--accent); }
+  .quick-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; }
+  td.amount, th.amount { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .month-block { margin-bottom: 20px; }
+  .month-header {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--primary-light); padding: 10px 12px; border-radius: 8px; margin-bottom: 6px;
+    flex-wrap: wrap; gap: 6px;
+  }
+  .month-header h3 { font-size: 1rem; color: var(--primary-dark); }
+  .month-summary { font-size: 0.85rem; text-align: right; }
+  .month-summary strong { color: var(--primary-dark); font-size: 1rem; }
+  .neg { color: var(--danger); }
+  .badge {
+    display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+    background: var(--primary-light); color: var(--primary-dark); margin-left: 4px;
+  }
+  .badge.adv { background: #fef3c7; color: #92400e; }
+  .badge.ded { background: #fee2e2; color: #991b1b; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .stat {
+    background: var(--primary-light); border-radius: 10px; padding: 12px; text-align: center;
+  }
+  .stat .num { font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); }
+  .stat .lbl { font-size: 0.75rem; color: var(--muted); }
+  .tab { display: none; }
+  .tab.active { display: block; }
+  .empty { text-align: center; color: var(--muted); padding: 30px; font-size: 0.9rem; }
+  .hint { font-size: 0.78rem; color: var(--muted); margin-top: -8px; margin-bottom: 12px; }
+  .year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+
+  /* Receipt styles */
+  #receiptArea {
+    background: white; border: 1px solid var(--border); border-radius: 8px;
+    padding: 28px; max-width: 700px; margin: 0 auto; font-size: 0.92rem;
+  }
+  #receiptArea .r-header { text-align: center; border-bottom: 2px solid var(--text); padding-bottom: 12px; margin-bottom: 16px; }
+  #receiptArea .r-header h2 { font-size: 1.2rem; letter-spacing: 1px; }
+  #receiptArea .r-header p { font-size: 0.85rem; color: var(--muted); }
+  #receiptArea table { margin: 12px 0; }
+  #receiptArea .r-total td { font-weight: 700; border-top: 2px solid var(--text); border-bottom: none; }
+  #receiptArea .r-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; font-size: 0.88rem; }
+  .sig-row { display: flex; gap: 30px; margin-top: 50px; flex-wrap: wrap; }
+  .sig-box { flex: 1; min-width: 200px; text-align: center; }
+  .sig-line { border-top: 1.5px solid var(--text); padding-top: 6px; font-size: 0.82rem; }
+  .ack { margin-top: 24px; font-size: 0.85rem; font-style: italic; }
+
+  @media print {
+    body * { visibility: hidden; }
+    #receiptArea, #receiptArea * { visibility: visible; }
+    #receiptArea {
+      position: absolute; left: 0; top: 0; width: 100%;
+      border: none; padding: 10mm; box-shadow: none;
+    }
+  }
+  @media (max-width: 600px) {
+    main { padding: 10px; }
+    th, td { padding: 6px 4px; font-size: 0.82rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏠 Helper Payroll System</h1>
+  <p>Salary and Holiday all-in-one</p>
+</header>
+
+<div id="syncBar">Loading data…</div>
+
+<nav>
+  <button class="active" onclick="showTab('payroll', this)">💰 Payroll</button>
+  <button onclick="showTab('receipt', this)">🧾 Receipt</button>
+  <button onclick="showTab('leave', this)">🏖️ Holidays</button>
+  <button onclick="showTab('settings', this)">⚙️ Settings</button>
+</nav>
+
+<main>
+
+<!-- ============ PAYROLL TAB ============ -->
+<div id="tab-payroll" class="tab active">
+  <div class="card">
+    <h2>📊 Yearly Summary (Net Paid)</h2>
+    <div class="year-grid" id="yearSummary"></div>
+  </div>
+
+  <div class="card">
+    <h2>➕ Add Entry</h2>
+    <div class="quick-btns">
+      <button class="btn btn-sm btn-outline" onclick="quickAdd('buyout')">Holiday Buyout</button>
+      <button class="btn btn-sm btn-outline" onclick="quickAdd('sh')">SH Bonus</button>
+      <button class="btn btn-sm btn-outline" onclick="quickAdd('salary')">Monthly Salary</button>
+      <button class="btn btn-sm btn-outline" onclick="quickAdd('advance')">Salary Advance</button>
+    </div>
+    <div class="row">
+      <div>
+        <label>Date</label>
+        <input type="date" id="entryDate">
+      </div>
+      <div>
+        <label>Category</label>
+        <select id="entryCategory" onchange="onCategoryChange()">
+          <option value="salary">Monthly Salary</option>
+          <option value="buyout">Working on a Holiday (Buyout)</option>
+          <option value="sh">Statutory Holiday Bonus</option>
+          <option value="bonus">Extra Bonus</option>
+          <option value="advance">Salary Advance</option>
+          <option value="deduction">Deduction</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Item Description</label>
+        <input type="text" id="entryItem" placeholder="e.g. Working on a Holiday">
+      </div>
+      <div>
+        <label>Amount (HK$)</label>
+        <input type="number" step="0.01" id="entryAmount" placeholder="168.00">
+      </div>
+    </div>
+    <p class="hint">Enter positive numbers for Advances / Deductions — they are automatically subtracted from the monthly total.</p>
+    <button class="btn" onclick="addEntry()">Add Entry</button>
+  </div>
+
+  <div class="card">
+    <h2>📋 All Records</h2>
+    <div id="entriesList"></div>
+  </div>
+</div>
+
+<!-- ============ RECEIPT TAB ============ -->
+<div id="tab-receipt" class="tab">
+  <div class="card">
+    <h2>🧾 Print Receipt</h2>
+    <div class="row">
+      <div>
+        <label>Select Month</label>
+        <select id="receiptMonth" onchange="renderReceipt()"></select>
+      </div>
+    </div>
+    <button class="btn btn-accent" onclick="window.print()">🖨️ Print</button>
+  </div>
+  <div id="receiptArea"></div>
+</div>
+
+<!-- ============ LEAVE TAB ============ -->
+<div id="tab-leave" class="tab">
+  <div class="card">
+    <h2>🏖️ Annual Leave</h2>
+    <div class="stat-grid" id="leaveStats"></div>
+    <div style="margin-top:14px;" class="row">
+      <div>
+        <label>Leave Taken (days)</label>
+        <input type="number" id="leaveTaken" min="0" step="0.5" onchange="saveSettingsQuiet(); renderLeave();">
+      </div>
+    </div>
+    <p class="hint">Formula: Days elapsed × Leave per 2 years ÷ Total contract days, minus leave taken.</p>
+  </div>
+
+  <div class="card">
+    <h2>📅 Statutory Holidays</h2>
+    <table>
+      <thead><tr><th>Date</th><th>Holiday</th></tr></thead>
+      <tbody id="shList"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ SETTINGS TAB ============ -->
+<div id="tab-settings" class="tab">
+  <div class="card">
+    <h2>🌐 GitHub Sync</h2>
+    <p class="hint" style="margin-top:0;">This app loads records from <strong>data.json</strong> in the same GitHub repo. After adding new entries, press "Export data.json" below and upload the file to GitHub (replace the old one). Anyone with the link will then see the updated records.</p>
+    <button class="btn" onclick="exportDataJson()">⬇️ Export data.json (upload to GitHub)</button>
+    <button class="btn btn-outline" onclick="forceReloadRemote()">🔄 Reload from GitHub (discard local changes)</button>
+  </div>
+
+  <div class="card">
+    <h2>⚙️ Basic Settings</h2>
+    <div class="row">
+      <div>
+        <label>Employer Name</label>
+        <input type="text" id="setEmployer">
+      </div>
+      <div>
+        <label>Helper Name</label>
+        <input type="text" id="setHelper">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Monthly Salary (HK$)</label>
+        <input type="number" id="setSalary" onchange="updateDailyRate()">
+      </div>
+      <div>
+        <label>Daily Rate (auto: salary ÷ 30.4375)</label>
+        <input type="text" id="setDaily" readonly style="background:#f1f5f9;">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Contract Start</label>
+        <input type="date" id="setContractStart">
+      </div>
+      <div>
+        <label>Contract End</label>
+        <input type="date" id="setContractEnd">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Annual Leave per 2 Years (days)</label>
+        <input type="number" id="setLeave2y">
+      </div>
+    </div>
+    <button class="btn" onclick="saveSettings()">💾 Save Settings</button>
+  </div>
+
+  <div class="card">
+    <h2>📦 Backup & Data</h2>
+    <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">⬆️ Import Backup (JSON)</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+    <button class="btn btn-outline" onclick="resetToPreloaded()">♻️ Reset to Preloaded Records</button>
+    <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All Records</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ================= DATA =================
+const CAT_LABEL = {
+  salary: 'Salary', buyout: 'Buyout', sh: 'SH Bonus', bonus: 'Bonus',
+  advance: 'Advance', deduction: 'Deduct', other: 'Other'
+};
+
+let state = {
+  settings: {
+    employer: '', helper: '',
+    monthlySalary: 5100,
+    contractStart: '2026-06-07',
+    contractEnd: '2028-06-06',
+    leavePer2Years: 14,
+    leaveTaken: 0
+  },
+  entries: [],
+  meta: { lastModified: '' }
+};
+
+// Full historical records: June 2024 – August 2026
+const PRELOADED = [
+  // ===== June 2024 (contract rate HK$4,870/month, daily HK$160) =====
+  ['2024-06-08','Octopus Card ($150 + $50 deposit)','deduction',200],
+  ['2024-06-12','Fare refund','other',30.6],
+  ['2024-06-16','Working on a Holiday','buyout',160],
+  ['2024-06-23','Working on a Holiday','buyout',160],
+  ['2024-06-30','Working on a Holiday','buyout',160],
+  ['2024-06-30','Salary for June (24 days)','salary',3840],
+  // ===== July 2024 =====
+  ['2024-07-07','Working on a Holiday','buyout',160],
+  ['2024-07-21','Working on a Holiday','buyout',160],
+  ['2024-07-28','Working on a Holiday','buyout',160],
+  ['2024-07-31','Salary for July','salary',4870],
+  // ===== August 2024 =====
+  ['2024-08-04','Working on a Holiday','buyout',160],
+  ['2024-08-11','Working on a Holiday','buyout',160],
+  ['2024-08-18','Working on a Holiday','buyout',160],
+  ['2024-08-25','Working on a Holiday','buyout',160],
+  ['2024-08-31','Salary for August','salary',4870],
+  // ===== September 2024 =====
+  ['2024-09-01','Working on a Holiday','buyout',160],
+  ['2024-09-08','Working on a Holiday','buyout',160],
+  ['2024-09-18','Mid-Autumn Festival Bonus','sh',160],
+  ['2024-09-22','Working on a Holiday','buyout',160],
+  ['2024-09-29','Working on a Holiday','buyout',160],
+  ['2024-09-30','Extra Bonus','bonus',120],
+  ['2024-09-30','Salary for September','salary',4870],
+  // ===== October 2024 =====
+  ['2024-10-01','Chinese National Day Bonus','sh',160],
+  ['2024-10-11','Ancestor Day Bonus','sh',160],
+  ['2024-10-13','Working on a Holiday','buyout',160],
+  ['2024-10-20','Working on a Holiday','buyout',160],
+  ['2024-10-27','Working on a Holiday','buyout',160],
+  ['2024-10-31','Extra Bonus','bonus',120],
+  ['2024-10-31','Salary for October','salary',4870],
+  // ===== November 2024 =====
+  ['2024-11-03','Working on a Holiday','buyout',160],
+  ['2024-11-17','Working on a Holiday','buyout',160],
+  ['2024-11-24','Working on a Holiday','buyout',160],
+  ['2024-11-30','Extra Bonus','bonus',120],
+  ['2024-11-30','Salary for November','salary',4870],
+  // ===== December 2024 =====
+  ['2024-12-08','Working on a Holiday','buyout',160],
+  ['2024-12-12','Condolence Money','other',301],
+  ['2024-12-12','Extra Bonus','bonus',120],
+  ['2024-12-12','Salary for December (paid early)','salary',4870],
+  ['2024-12-15','Working on a Holiday','buyout',160],
+  ['2024-12-22','Working on a Holiday','buyout',160],
+  ['2024-12-25','Christmas Day Bonus','sh',160],
+  ['2024-12-26','Boxing Day Bonus','sh',160],
+  ['2024-12-29','Working on a Holiday','buyout',160],
+  // ===== January 2025 =====
+  ['2025-01-05','Working on a Holiday','buyout',160],
+  ['2025-01-12','Working on a Holiday','buyout',160],
+  ['2025-01-19','Working on a Holiday','buyout',160],
+  ['2025-01-26','Working on a Holiday','buyout',160],
+  ['2025-01-29','Lunar New Year Bonus (3 days)','sh',480],
+  ['2025-01-31','Extra Bonus','bonus',120],
+  ['2025-01-31','Salary for January','salary',4870],
+  // ===== February 2025 =====
+  ['2025-02-09','Working on a Holiday','buyout',160],
+  ['2025-02-23','Working on a Holiday','buyout',160],
+  ['2025-02-28','Extra Bonus','bonus',120],
+  ['2025-02-28','Salary for February','salary',4870],
+  // ===== March 2025 =====
+  ['2025-03-09','Working on a Holiday','buyout',160],
+  ['2025-03-16','Working on a Holiday','buyout',160],
+  ['2025-03-23','Working on a Holiday','buyout',160],
+  ['2025-03-30','Working on a Holiday','buyout',160],
+  ['2025-03-31','Extra Bonus','bonus',120],
+  ['2025-03-31','Salary for March','salary',4870],
+  // ===== April 2025 =====
+  ['2025-04-04','Ching Ming Holiday Bonus','sh',160],
+  ['2025-04-06','Working on a Holiday','buyout',160],
+  ['2025-04-18','Easter Bonus','sh',160],
+  ['2025-04-19','Easter Bonus','sh',160],
+  ['2025-04-20','Working on a Holiday','buyout',160],
+  ['2025-04-21','Easter Bonus','sh',160],
+  ['2025-04-27','Working on a Holiday','buyout',160],
+  ['2025-04-30','Extra Bonus','bonus',120],
+  ['2025-04-30','Salary for April','salary',4870],
+  ['2025-04-30','Salary for May (Advanced)','salary',4870],
+  // ===== May 2025 =====
+  ['2025-05-01','Salary Advanced (May salary paid in April)','advance',4870],
+  ['2025-05-04','Working on a Holiday','buyout',160],
+  ['2025-05-05','Buddha\'s Birthday Bonus','sh',160],
+  ['2025-05-11','Working on a Holiday','buyout',160],
+  ['2025-05-18','Working on a Holiday','buyout',160],
+  ['2025-05-25','Working on a Holiday','buyout',160],
+  ['2025-05-31','Dragon Boat Holiday Bonus','sh',160],
+  ['2025-05-31','Extra Bonus','bonus',120],
+  ['2025-05-31','Salary for May','salary',4870],
+  // ===== June 2025 =====
+  ['2025-06-01','Working on a Holiday','buyout',160],
+  ['2025-06-02','Salary for June (paid early 2.6.2025)','salary',4870],
+  ['2025-06-05','Sanitary Pads','deduction',17.6],
+  ['2025-06-08','Working on a Holiday','buyout',160],
+  ['2025-06-22','Working on a Holiday','buyout',160],
+  ['2025-06-29','Working on a Holiday','buyout',160],
+  ['2025-06-30','Extra Bonus','bonus',120],
+  // ===== July 2025 =====
+  ['2025-07-01','HKSAR Day Bonus','sh',160],
+  ['2025-07-06','Working on a Holiday','buyout',160],
+  ['2025-07-13','Working on a Holiday','buyout',160],
+  ['2025-07-20','Working on a Holiday','buyout',160],
+  ['2025-07-23','Salary for July (paid early)','salary',1000],
+  ['2025-07-27','Working on a Holiday','buyout',160],
+  ['2025-07-31','Extra Bonus','bonus',120],
+  ['2025-07-31','Salary for July (remainder)','salary',3870],
+  // ===== August 2025 =====
+  ['2025-08-03','Working on a Holiday','buyout',160],
+  ['2025-08-10','Working on a Holiday','buyout',160],
+  ['2025-08-17','Working on a Holiday','buyout',160],
+  ['2025-08-24','Working on a Holiday','buyout',160],
+  ['2025-08-31','Extra Bonus','bonus',120],
+  ['2025-08-31','Salary for August','salary',4870],
+  // ===== September 2025 =====
+  ['2025-09-07','Working on a Holiday','buyout',160],
+  ['2025-09-21','Working on a Holiday','buyout',160],
+  ['2025-09-28','Working on a Holiday','buyout',160],
+  ['2025-09-30','Extra Bonus','bonus',120],
+  ['2025-09-30','Salary for September','salary',4870],
+  // ===== October 2025 =====
+  ['2025-10-01','China National Day Bonus','sh',160],
+  ['2025-10-05','Working on a Holiday','buyout',160],
+  ['2025-10-07','Mid-Autumn Bonus','sh',160],
+  ['2025-10-12','Working on a Holiday','buyout',160],
+  ['2025-10-19','Working on a Holiday','buyout',160],
+  ['2025-10-26','Working on a Holiday','buyout',160],
+  ['2025-10-29','Chung Yeung (Ancestor\'s Day) Bonus','sh',160],
+  ['2025-10-31','Extra Bonus','bonus',120],
+  ['2025-10-31','Salary for October','salary',4870],
+  // ===== November 2025 =====
+  ['2025-11-02','Working on a Holiday','buyout',160],
+  ['2025-11-09','Working on a Holiday','buyout',160],
+  ['2025-11-16','Working on a Holiday','buyout',160],
+  ['2025-11-23','Working on a Holiday','buyout',160],
+  ['2025-11-30','Working on a Holiday','buyout',160],
+  ['2025-11-30','Extra Bonus','bonus',120],
+  ['2025-11-30','Salary for November','salary',4870],
+  ['2025-11-30','Salary for December (Advanced)','salary',1000],
+  // ===== December 2025 =====
+  ['2025-12-01','Salary Advanced (paid 30.11.2025)','advance',1000],
+  ['2025-12-07','Working on a Holiday','buyout',160],
+  ['2025-12-14','Working on a Holiday','buyout',160],
+  ['2025-12-21','Working on a Holiday','buyout',160],
+  ['2025-12-26','Boxing Day Bonus','sh',160],
+  ['2025-12-28','Working on a Holiday','buyout',160],
+  ['2025-12-31','Extra Bonus','bonus',120],
+  ['2025-12-31','Salary for December','salary',4870],
+  // ===== January 2026 =====
+  ['2026-01-01','New Year Bonus','sh',160],
+  ['2026-01-04','Working on a Holiday','buyout',160],
+  ['2026-01-11','Working on a Holiday','buyout',160],
+  ['2026-01-18','Working on a Holiday','buyout',160],
+  ['2026-01-24','Salary for January (paid early)','salary',1000],
+  ['2026-01-31','Extra Bonus','bonus',120],
+  ['2026-01-31','Salary for January (remainder)','salary',3870],
+  ['2026-01-31','Salary for February (Advanced)','salary',4870],
+  // ===== February 2026 =====
+  ['2026-02-01','Salary Advanced (Feb salary paid 31.1.2026)','advance',4870],
+  ['2026-02-02','Working on a Holiday','buyout',160],
+  ['2026-02-09','Working on a Holiday','buyout',160],
+  ['2026-02-16','Working on a Holiday','buyout',160],
+  ['2026-02-17','Lunar New Year Bonus (3 days)','sh',480],
+  ['2026-02-23','Working on a Holiday','buyout',160],
+  ['2026-02-28','Extra Bonus','bonus',120],
+  ['2026-02-28','Salary for February','salary',4870],
+  // ===== March 2026 =====
+  ['2026-03-01','Working on a Holiday','buyout',160],
+  ['2026-03-15','Working on a Holiday','buyout',160],
+  ['2026-03-22','Working on a Holiday','buyout',160],
+  ['2026-03-31','Extra Bonus','bonus',120],
+  ['2026-03-31','Salary for March','salary',4870],
+  ['2026-03-31','Salary for April (Advanced)','salary',2000],
+  // ===== April 2026 =====
+  ['2026-04-01','Salary Advanced (paid 31.3.2026)','advance',2000],
+  ['2026-04-03','Easter Bonus (3 days)','sh',480],
+  ['2026-04-05','Ching Ming Bonus','sh',160],
+  ['2026-04-12','Working on a Holiday','buyout',160],
+  ['2026-04-19','Working on a Holiday','buyout',160],
+  ['2026-04-26','Working on a Holiday','buyout',160],
+  ['2026-04-30','Extra Bonus','bonus',120],
+  ['2026-04-30','Salary for April','salary',4870],
+  ['2026-04-30','Salary for May (Advanced)','salary',2500],
+  // ===== May 2026 =====
+  ['2026-05-01','Salary Advanced (paid 30.4.2026)','advance',2500],
+  ['2026-05-01','Labour Day Bonus','sh',160],
+  ['2026-05-03','Working on a Holiday','buyout',160],
+  ['2026-05-10','Working on a Holiday','buyout',160],
+  ['2026-05-17','Working on a Holiday','buyout',160],
+  ['2026-05-24','Working on a Holiday','buyout',160],
+  ['2026-05-25','Buddha\'s Birthday Bonus','sh',160],
+  ['2026-05-31','Working on a Holiday','buyout',160],
+  ['2026-05-31','Extra Bonus','bonus',120],
+  ['2026-05-31','Salary for May','salary',4870],
+  // ===== June 2026 (old contract ends 6.6, new contract HK$5,100/month, daily HK$168) =====
+  ['2026-06-06','Extra Bonus','bonus',120],
+  ['2026-06-06','Days in lieu of annual leave','other',320],
+  ['2026-06-06','Salary for June (6 days, old contract)','salary',960],
+  ['2026-06-07','Salary for June (24 days, new contract)','salary',4021.40],
+  ['2026-06-07','Salary Advanced (June salary paid 7.6.2026)','advance',4021.40],
+  ['2026-06-19','Dragon Boat Festival Bonus','sh',168],
+  ['2026-06-21','Working on a Holiday','buyout',168],
+  ['2026-06-28','Working on a Holiday','buyout',168],
+  // ===== July 2026 =====
+  ['2026-07-01','HKSAR Day Bonus','sh',168],
+  ['2026-07-05','Working on a Holiday','buyout',168],
+  ['2026-07-12','Working on a Holiday','buyout',168],
+  ['2026-07-19','Working on a Holiday','buyout',168],
+  ['2026-07-22','Salary Advanced','advance',500],
+  ['2026-07-26','Working on a Holiday','buyout',168],
+  ['2026-07-31','Salary for July','salary',5100],
+  // ===== August 2026 =====
+  ['2026-08-01','Salary Advanced (paid 22.7.2026)','advance',2000],
+  ['2026-08-02','Working on a Holiday','buyout',168],
+  ['2026-08-09','Working on a Holiday','buyout',168],
+  ['2026-08-23','Working on a Holiday','buyout',168],
+  ['2026-08-30','Working on a Holiday','buyout',168],
+  ['2026-08-31','Salary for August','salary',5100],
+  ['2026-08-31','Salary for September (Advanced)','salary',5100]
+];
+
+function preloadedEntries() {
+  return PRELOADED.map((e, i) => ({ id: i + 1, date: e[0], item: e[1], category: e[2], amount: e[3] }));
+}
+
+const SH_HOLIDAYS = [
+  ['2026-07-01','HKSAR Establishment Day'],
+  ['2026-09-26','Day after Mid-Autumn Festival'],
+  ['2026-10-01','National Day'],
+  ['2026-10-19','Chung Yeung Festival'],
+  ['2026-12-25','Christmas Day'],
+  ['2026-12-26','Boxing Day'],
+  ['2027-01-01','New Year\'s Day'],
+  ['2027-02-06','Lunar New Year Day 1'],
+  ['2027-02-08','Lunar New Year Day 2'],
+  ['2027-02-09','Lunar New Year Day 3'],
+  ['2027-03-26','Easter Holiday 1'],
+  ['2027-03-27','Easter Holiday 2'],
+  ['2027-03-29','Easter Holiday 3'],
+  ['2027-04-05','Ching Ming Festival'],
+  ['2027-05-01','Labour Day'],
+  ['2027-05-13','Buddha\'s Birthday'],
+  ['2027-06-09','Dragon Boat Festival'],
+  ['2027-07-01','HKSAR Establishment Day'],
+  ['2027-09-16','Day after Mid-Autumn Festival']
+];
+
+// ================= STORAGE & SYNC =================
+const STORAGE_KEY = 'helperPayroll_v2';
+let syncStatus = 'loading'; // 'synced' | 'dirty' | 'norem' | 'loading'
+let remoteTime = '';
+
+function persistLocal() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function save() {
+  if (!state.meta) state.meta = {};
+  state.meta.lastModified = new Date().toISOString();
+  persistLocal();
+  syncStatus = 'dirty';
+  updateSyncBar();
+}
+function loadLocal() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      state = JSON.parse(raw);
+      if (!state.meta) state.meta = { lastModified: '' };
+      return true;
+    }
+  } catch(e) {}
+  state.entries = preloadedEntries();
+  state.meta = { lastModified: '' };
+  return false;
+}
+async function fetchRemote() {
+  const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('not found');
+  const remote = await res.json();
+  if (!remote || !remote.entries || !remote.settings) throw new Error('bad format');
+  return remote;
+}
+async function initSync() {
+  loadLocal();
+  try {
+    const remote = await fetchRemote();
+    remoteTime = (remote.meta && remote.meta.lastModified) || '';
+    const localTime = (state.meta && state.meta.lastModified) || '';
+    if (!localTime || remoteTime >= localTime) {
+      // Remote is same or newer → use remote as source of truth
+      state = remote;
+      if (!state.meta) state.meta = { lastModified: remoteTime };
+      persistLocal();
+      syncStatus = 'synced';
+    } else {
+      // Local has unpublished changes
+      syncStatus = 'dirty';
+    }
+  } catch(e) {
+    syncStatus = 'norem';
+  }
+  renderAll();
+}
+async function forceReloadRemote() {
+  if (!confirm('Reload records from GitHub? Any local changes not yet uploaded will be DISCARDED.')) return;
+  try {
+    const remote = await fetchRemote();
+    state = remote;
+    if (!state.meta) state.meta = { lastModified: '' };
+    persistLocal();
+    syncStatus = 'synced';
+    renderAll();
+    showMsg('Reloaded from GitHub ✔');
+  } catch(e) {
+    showMsg('Could not load data.json from GitHub');
+  }
+}
+function updateSyncBar() {
+  const bar = document.getElementById('syncBar');
+  bar.className = '';
+  if (syncStatus === 'synced') {
+    bar.classList.add('synced');
+    const t = (state.meta && state.meta.lastModified) ? new Date(state.meta.lastModified).toLocaleString('en-HK') : '—';
+    bar.innerHTML = '✅ Synced with GitHub';
+  } else if (syncStatus === 'dirty') {
+    bar.classList.add('dirty');
+    bar.innerHTML = '⚠️ Local changes not yet on GitHub — go to <strong>Settings → Export data.json</strong> and upload it to your repo so others can see the update.';
+  } else if (syncStatus === 'norem') {
+    bar.classList.add('norem');
+    bar.innerHTML = 'ℹ️ data.json not found — showing local data only. Export data.json in Settings and upload it to your GitHub repo to enable shared viewing.';
+  } else {
+    bar.textContent = 'Loading data…';
+  }
+}
+
+// ================= HELPERS =================
+function dailyRate() { return Math.round(state.settings.monthlySalary / 30.4375); }
+function fmt(n) { return n.toLocaleString('en-HK', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function monthKey(d) { return d.slice(0,7); }
+function monthName(key) {
+  const [y,m] = key.split('-');
+  const names = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return names[parseInt(m)-1] + ' ' + y;
+}
+function todayStr() { return new Date().toISOString().slice(0,10); }
+
+// ================= TABS =================
+function showTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'receipt') { buildMonthOptions(); renderReceipt(); }
+  if (name === 'leave') renderLeave();
+}
+
+// ================= PAYROLL =================
+function quickAdd(cat) {
+  document.getElementById('entryCategory').value = cat;
+  onCategoryChange();
+  document.getElementById('entryDate').value = todayStr();
+}
+function onCategoryChange() {
+  const cat = document.getElementById('entryCategory').value;
+  const item = document.getElementById('entryItem');
+  const amt = document.getElementById('entryAmount');
+  const dr = dailyRate();
+  if (cat === 'buyout') { item.value = 'Working on a Holiday'; amt.value = dr; }
+  else if (cat === 'sh') { item.value = 'Statutory Holiday Bonus'; amt.value = dr; }
+  else if (cat === 'salary') {
+    const m = new Date().toLocaleString('en', {month:'long'});
+    item.value = 'Salary for ' + m; amt.value = state.settings.monthlySalary;
+  }
+  else if (cat === 'advance') { item.value = 'Salary Advanced'; amt.value = ''; }
+  else if (cat === 'bonus') { item.value = 'Extra Bonus'; amt.value = ''; }
+  else { item.value = ''; amt.value = ''; }
+}
+function addEntry() {
+  const date = document.getElementById('entryDate').value;
+  const item = document.getElementById('entryItem').value.trim();
+  const category = document.getElementById('entryCategory').value;
+  const amount = parseFloat(document.getElementById('entryAmount').value);
+  if (!date || !item || isNaN(amount)) { showMsg('Please fill in date, item and amount'); return; }
+  state.entries.push({ id: Date.now(), date, item, category, amount });
+  save();
+  renderEntries();
+  document.getElementById('entryItem').value = '';
+  document.getElementById('entryAmount').value = '';
+  showMsg('Entry added ✔ Remember to export & upload data.json');
+}
+function deleteEntry(id) {
+  if (confirm('Delete this entry?')) {
+    state.entries = state.entries.filter(e => e.id !== id);
+    save(); renderEntries();
+  }
+}
+function monthTotals(entries) {
+  let earned = 0, advance = 0;
+  entries.forEach(e => {
+    if (e.category === 'advance') advance += e.amount;
+    else if (e.category === 'deduction') earned -= Math.abs(e.amount);
+    else earned += e.amount;
+  });
+  return { earned, advance, payable: earned - advance };
+}
+function groupByMonth() {
+  const groups = {};
+  state.entries.forEach(e => {
+    const k = monthKey(e.date);
+    (groups[k] = groups[k] || []).push(e);
+  });
+  return groups;
+}
+function renderYearSummary() {
+  const groups = groupByMonth();
+  const years = {};
+  Object.keys(groups).forEach(k => {
+    const y = k.slice(0,4);
+    years[y] = (years[y] || 0) + monthTotals(groups[k]).payable;
+  });
+  const el = document.getElementById('yearSummary');
+  const keys = Object.keys(years).sort().reverse();
+  if (!keys.length) { el.innerHTML = '<div class="empty">No data yet</div>'; return; }
+  el.innerHTML = keys.map(y =>
+    `<div class="stat"><div class="num">$${fmt(years[y])}</div><div class="lbl">${y} Total Paid</div></div>`).join('');
+}
+function renderEntries() {
+  renderYearSummary();
+  const groups = groupByMonth();
+  const keys = Object.keys(groups).sort().reverse();
+  const el = document.getElementById('entriesList');
+  if (!keys.length) { el.innerHTML = '<div class="empty">No records yet — add your first entry above!</div>'; return; }
+  let html = '';
+  keys.forEach(k => {
+    const entries = groups[k].sort((a,b) => a.date.localeCompare(b.date));
+    const t = monthTotals(entries);
+    html += `<div class="month-block">
+      <div class="month-header">
+        <h3>${monthName(k)}</h3>
+        <div class="month-summary">
+          Earned: HK$${fmt(t.earned)}
+          ${t.advance ? ` &nbsp;|&nbsp; Advance: <span class="neg">−HK$${fmt(t.advance)}</span>` : ''}
+          &nbsp;|&nbsp; Net: <strong>HK$${fmt(t.payable)}</strong>
+        </div>
+      </div>
+      <table><thead><tr><th>Date</th><th>Item</th><th class="amount">Amount</th><th></th></tr></thead><tbody>`;
+    entries.forEach(e => {
+      const isNeg = e.category === 'advance' || e.category === 'deduction' || e.amount < 0;
+      const badgeClass = e.category === 'advance' ? 'adv' : (e.category === 'deduction' ? 'ded' : '');
+      html += `<tr>
+        <td>${e.date}</td>
+        <td>${e.item}<span class="badge ${badgeClass}">${CAT_LABEL[e.category]}</span></td>
+        <td class="amount ${isNeg ? 'neg' : ''}">${e.category==='advance'||e.category==='deduction' ? '−' : ''}${fmt(Math.abs(e.amount))}</td>
+        <td style="text-align:right;"><button class="btn btn-sm btn-danger" onclick="deleteEntry(${e.id})">Del</button></td>
+      </tr>`;
+    });
+    html += '</tbody></table></div>';
+  });
+  el.innerHTML = html;
+}
+function showMsg(msg) {
+  let bar = document.getElementById('msgBar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'msgBar';
+    bar.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:20px;font-size:0.9rem;z-index:99;transition:opacity .3s;max-width:90%;text-align:center;';
+    document.body.appendChild(bar);
+  }
+  bar.textContent = msg;
+  bar.style.opacity = '1';
+  clearTimeout(bar._t);
+  bar._t = setTimeout(() => bar.style.opacity = '0', 2600);
+}
+
+// ================= RECEIPT =================
+function buildMonthOptions() {
+  const keys = Object.keys(groupByMonth()).sort().reverse();
+  const sel = document.getElementById('receiptMonth');
+  const cur = sel.value;
+  sel.innerHTML = keys.map(k => `<option value="${k}">${monthName(k)}</option>`).join('');
+  if (keys.includes(cur)) sel.value = cur;
+}
+function renderReceipt() {
+  const k = document.getElementById('receiptMonth').value;
+  const area = document.getElementById('receiptArea');
+  if (!k) { area.innerHTML = '<div class="empty">No records available for a receipt</div>'; return; }
+  const entries = groupByMonth()[k].sort((a,b) => a.date.localeCompare(b.date));
+  const t = monthTotals(entries);
+  const s = state.settings;
+  let rows = '';
+  entries.filter(e => e.category !== 'advance').forEach(e => {
+    const neg = e.category === 'deduction' || e.amount < 0;
+    rows += `<tr><td>${e.date}</td><td>${e.item}</td><td class="amount">${neg?'−':''}${fmt(Math.abs(e.amount))}</td></tr>`;
+  });
+  const advances = entries.filter(e => e.category === 'advance');
+  let advRows = advances.map(e =>
+    `<tr><td>${e.date}</td><td>Less: ${e.item}</td><td class="amount neg">−${fmt(e.amount)}</td></tr>`).join('');
+
+  area.innerHTML = `
+    <div class="r-header">
+      <h2>SALARY RECEIPT</h2>
+      <p>${monthName(k)}</p>
+    </div>
+    <div class="r-meta">
+      <span><strong>Employer:</strong> ${s.employer || '____________'}</span>
+      <span><strong>Employee:</strong> ${s.helper || '____________'}</span>
+    </div>
+    <table>
+      <thead><tr><th>Date</th><th>Item</th><th class="amount">Amount (HK$)</th></tr></thead>
+      <tbody>
+        ${rows}
+        <tr class="r-total"><td></td><td>Total</td><td class="amount">${fmt(t.earned)}</td></tr>
+        ${advRows}
+        ${advances.length ? `<tr class="r-total"><td></td><td>Net Payable</td><td class="amount">${fmt(t.payable)}</td></tr>` : ''}
+      </tbody>
+    </table>
+    <p class="ack">I hereby acknowledge receipt of the sum of <strong>HK$${fmt(t.payable)}</strong> being my salary and allowances for ${monthName(k)}.</p>
+    <div class="sig-row">
+      <div class="sig-box"><div style="height:40px;"></div><div class="sig-line">${s.employer || '____________'}<br>Employer</div></div>
+      <div class="sig-box"><div style="height:40px;"></div><div class="sig-line">${s.helper || '____________'}<br>Employee</div></div>
+    </div>
+  `;
+}
+
+// ================= LEAVE =================
+function renderLeave() {
+  const s = state.settings;
+  const start = new Date(s.contractStart);
+  const end = new Date(s.contractEnd);
+  const today = new Date();
+  const totalDays = Math.round((end - start) / 86400000) + 1;
+  let elapsed = Math.round((today - start) / 86400000) + 1;
+  elapsed = Math.max(0, Math.min(elapsed, totalDays));
+  const eligible = elapsed * s.leavePer2Years / totalDays;
+  const balance = eligible - (s.leaveTaken || 0);
+  document.getElementById('leaveTaken').value = s.leaveTaken || 0;
+  document.getElementById('leaveStats').innerHTML = `
+    <div class="stat"><div class="num">${elapsed}</div><div class="lbl">Days Elapsed</div></div>
+    <div class="stat"><div class="num">${s.leavePer2Years}</div><div class="lbl">Leave per 2 Years</div></div>
+    <div class="stat"><div class="num">${eligible.toFixed(1)}</div><div class="lbl">Eligible Today</div></div>
+    <div class="stat"><div class="num">${(s.leaveTaken||0)}</div><div class="lbl">Taken</div></div>
+    <div class="stat" style="background:#fef3c7;"><div class="num" style="color:#92400e;">${balance.toFixed(1)}</div><div class="lbl">Balance</div></div>
+  `;
+  const today0 = todayStr();
+  document.getElementById('shList').innerHTML = SH_HOLIDAYS.map(([d, n]) =>
+    `<tr style="${d < today0 ? 'opacity:0.45;' : ''}"><td>${d}${d < today0 ? ' ✔' : ''}</td><td>${n}</td></tr>`).join('');
+}
+
+// ================= SETTINGS =================
+function loadSettingsForm() {
+  const s = state.settings;
+  document.getElementById('setEmployer').value = s.employer;
+  document.getElementById('setHelper').value = s.helper;
+  document.getElementById('setSalary').value = s.monthlySalary;
+  document.getElementById('setContractStart').value = s.contractStart;
+  document.getElementById('setContractEnd').value = s.contractEnd;
+  document.getElementById('setLeave2y').value = s.leavePer2Years;
+  updateDailyRate();
+}
+function updateDailyRate() {
+  const sal = parseFloat(document.getElementById('setSalary').value) || 0;
+  document.getElementById('setDaily').value = 'HK$' + Math.round(sal / 30.4375) + ' (' + (sal/30.4375).toFixed(2) + ')';
+}
+function saveSettings() {
+  const s = state.settings;
+  s.employer = document.getElementById('setEmployer').value.trim();
+  s.helper = document.getElementById('setHelper').value.trim();
+  s.monthlySalary = parseFloat(document.getElementById('setSalary').value) || 5100;
+  s.contractStart = document.getElementById('setContractStart').value;
+  s.contractEnd = document.getElementById('setContractEnd').value;
+  s.leavePer2Years = parseFloat(document.getElementById('setLeave2y').value) || 14;
+  save();
+  showMsg('Settings saved ✔ Remember to export & upload data.json');
+}
+function saveSettingsQuiet() {
+  state.settings.leaveTaken = parseFloat(document.getElementById('leaveTaken').value) || 0;
+  save();
+}
+
+// ================= EXPORT / IMPORT =================
+function exportDataJson() {
+  if (!state.meta) state.meta = {};
+  if (!state.meta.lastModified) state.meta.lastModified = new Date().toISOString();
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'data.json';
+  a.click();
+  showMsg('data.json exported — now upload it to your GitHub repo ✔');
+}
+function importData(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.settings && data.entries) {
+        state = data;
+        if (!state.meta) state.meta = { lastModified: '' };
+        save();
+        loadSettingsForm(); renderEntries(); renderLeave();
+        showMsg('Backup imported ✔');
+      } else showMsg('Invalid file format');
+    } catch(err) { showMsg('Failed to read file'); }
+  };
+  reader.readAsText(file);
+  ev.target.value = '';
+}
+function resetToPreloaded() {
+  if (confirm('Replace all current records with the preloaded history (Jun 2024 – Aug 2026)?\nExport data.json first if unsure!')) {
+    state.entries = preloadedEntries();
+    save(); renderEntries();
+    showMsg('Preloaded records restored ✔');
+  }
+}
+function clearAll() {
+  if (confirm('Delete ALL records? (Settings will be kept)\nExport data.json first!')) {
+    state.entries = [];
+    save(); renderEntries();
+    showMsg('All records cleared');
+  }
+}
+
+// ================= RENDER ALL / INIT =================
+function renderAll() {
+  loadSettingsForm();
+  renderEntries();
+  renderLeave();
+  updateSyncBar();
+  document.getElementById('entryDate').value = todayStr();
+}
+initSync();
+</script>
+</body>
+</html>
