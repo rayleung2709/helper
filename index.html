@@ -427,7 +427,7 @@ function showMsg(msg) {
 
 /* ---------- Calendar (reads calendar.json written by GitHub Action) ---------- */
 const HK = 'Asia/Hong_Kong';
-const CAL_DEFAULT_DAYS = 60;                 // show this many days ahead by default
+const CAL_DEFAULT_DAYS = 30;                 // show this many days ahead by default
 let calData = null, calShowPast = false, calShowAll = false;
 
 const hkYmd    = d => new Intl.DateTimeFormat('en-CA', { timeZone: HK, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
@@ -481,11 +481,12 @@ function renderCalendar() {
   const put = (ymd, item) => { if (!byDay.has(ymd)) byDay.set(ymd, []); byDay.get(ymd).push(item); };
 
   for (const ev of calData.events || []) {
-    if (ev.allDay) {
-      // all-day end is exclusive; multi-day events appear on every day they cover
-      const nDays = Math.max(1, Math.round((ymdToUtc(ev.end) - ymdToUtc(ev.start)) / 86400000));
-      for (let i = 0; i < nDays && i < 90; i++) put(addDays(ev.start, i), { ev, day: i + 1, nDays, sort: -1 });
-    } else {
+  if (ev.allDay) {
+        const nDays = Math.max(1, Math.round((ymdToUtc(ev.end) - ymdToUtc(ev.start)) / 86400000));
+        // 只出一張卡：未開始就放喺第一日；已經開始但未完就掛喺今日
+        const showOn = (ev.start < today && ev.end > today) ? today : ev.start;
+        put(showOn, { ev, day: 1, nDays, sort: -1 });
+      } else {
       const s = new Date(ev.start);
       put(hkYmd(s), { ev, sort: s.getTime() });
     }
@@ -526,7 +527,7 @@ function renderDay(ymd, items, today, isPast) {
     let time, cls = 'ev';
     if (ev.allDay) {
       cls += ' allday';
-      time = 'All day' + (nDays > 1 ? `<small>Day ${day} of ${nDays}</small>` : '');
+      time = 'All day' + (nDays > 1 ? `<small>${nDays} days · to ${shortDate(addDays(ev.end, -1))}</small>` : '');
     } else {
       const s = new Date(ev.start), e = new Date(ev.end);
       time = hkTime(s);
