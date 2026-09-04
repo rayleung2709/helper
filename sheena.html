@@ -260,29 +260,55 @@ const SH_HOLIDAYS = [
 // ================= LOAD =================
 async function fetchRemote() {
   const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
-  if (!res.ok) throw new Error('not found');
-  const remote = await res.json();
-  if (!remote || !remote.entries || !remote.settings) throw new Error('bad format');
+  if (!res.ok) throw new Error(`data.json 搵唔到 (HTTP ${res.status})`);
+  const text = await res.text();
+  let remote;
+  try { remote = JSON.parse(text); }
+  catch (e) { throw new Error('data.json 格式錯：' + e.message); }
+  if (!remote || typeof remote !== 'object') throw new Error('data.json 最外層要係 { }');
+  if (!Array.isArray(remote.entries))      throw new Error('缺少 "entries" array');
+  if (!remote.settings)                    throw new Error('缺少 "settings"');
+
+  // 清洗：日期格式錯嘅略過、金額 "5,000" 轉 5000
+  const before = remote.entries.length;
+  remote.entries = remote.entries
+    .filter(e => e && typeof e.date === 'string' && /^\d{4}-\d{2}-\d{2}/.test(e.date))
+    .map(e => ({
+      ...e,
+      item: e.item || '',
+      category: e.category || 'other',
+      amount: Number(String(e.amount).replace(/[^\d.-]/g, '')) || 0
+    }));
+  remote._dropped = before - remote.entries.length;
   return remote;
 }
+
 async function loadData() {
   const bar = document.getElementById('syncBar');
   bar.className = ''; bar.textContent = 'Loading data…';
   try {
     state = await fetchRemote();
-    const t = (state.meta && state.meta.lastModified)
-      ? new Date(state.meta.lastModified).toLocaleString('en-HK', { dateStyle: 'medium', timeStyle: 'short' })
-      : null;
-    bar.className = 'synced';
-    bar.innerHTML = `✅ Up to date${t ? ' · ' + t : ''} <a onclick="loadData()">↻ Refresh</a>`;
-    renderAll();
-  } catch(e) {
+  } catch (e) {
+    console.error(e);
     bar.className = 'err';
-    bar.innerHTML = '⚠️ Unable to load records right now.<a onclick="loadData()">↻ Try again</a>';
+    bar.innerHTML = `⚠️ ${e.message} <a onclick="loadData()">↻ Try again</a>`;
     if (!state) {
       document.getElementById('yearSummary').innerHTML = '';
       document.getElementById('entriesList').innerHTML = '<div class="empty">No data available</div>';
     }
+    return;
+  }
+  try {
+    renderAll();
+    const t = (state.meta && state.meta.lastModified)
+      ? new Date(state.meta.lastModified).toLocaleString('en-HK') : '';
+    const warn = state._dropped ? ` · ⚠ ${state._dropped} 條日期格式錯已略過` : '';
+    bar.className = state._dropped ? '' : 'synced';
+    bar.innerHTML = `✅ Updated ${t}${warn} <a onclick="loadData()">↻ Refresh</a>`;
+  } catch (e) {
+    console.error(e);
+    bar.className = 'err';
+    bar.innerHTML = `⚠️ 資料讀到但顯示出錯：${e.message} <a onclick="loadData()">↻ Retry</a>`;
   }
 }
 
