@@ -2,287 +2,424 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Payroll – Sheena</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helper Payroll & Holiday Tracker</title>
 <style>
-  * { box-sizing: border-box; }
-  body { font-family: -apple-system, system-ui, sans-serif; margin: 0; background: #f4f5f7; color: #222; }
-  header { background: #2c3e50; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-  header h1 { font-size: 18px; margin: 0; }
-  header button { background: #fff; color: #2c3e50; border: 0; border-radius: 6px; padding: 6px 12px; font-weight: 600; cursor: pointer; }
-  #status { font-size: 12px; padding: 6px 16px; background: #e8f4fd; color: #1b4f72; }
-  #status.err { background: #fdecea; color: #a12622; }
-  nav { display: flex; background: #fff; border-bottom: 1px solid #ddd; }
-  nav button { flex: 1; padding: 12px 0; border: 0; background: none; font-size: 15px; cursor: pointer; color: #666; }
-  nav button.active { color: #2c3e50; font-weight: 700; border-bottom: 3px solid #2c3e50; }
-  main { padding: 12px; max-width: 720px; margin: 0 auto; }
-  .card { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-  .card h2 { font-size: 15px; margin: 0 0 10px; color: #2c3e50; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid #eee; }
-  th { font-size: 12px; text-transform: uppercase; color: #888; }
-  td.num, th.num { text-align: right; white-space: nowrap; }
-  .neg { color: #c0392b; }
-  .month-head { background: #f8f9fa; font-weight: 700; }
-  .month-total td { font-weight: 600; background: #fbfcfd; }
-  .tag { font-size: 11px; padding: 2px 6px; border-radius: 4px; background: #eef1f4; color: #555; }
-  .hidden { display: none; }
-  .kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: 14px; }
-  .kv b { color: #2c3e50; }
-  .big { font-size: 28px; font-weight: 700; color: #2c3e50; }
-  /* receipt */
-  .receipt { border: 1px solid #ccc; padding: 20px; background: #fff; }
-  .receipt h3 { margin: 0 0 4px; }
-  .sig { display: flex; justify-content: space-between; margin-top: 50px; }
-  .sig div { width: 45%; border-top: 1px solid #333; padding-top: 6px; font-size: 13px; text-align: center; }
-  select { font-size: 15px; padding: 6px; }
+  :root {
+    --primary: #0f766e;
+    --primary-dark: #115e59;
+    --primary-light: #ccfbf1;
+    --accent: #f59e0b;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --danger: #dc2626;
+    --border: #e2e8f0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; padding: 20px 16px; text-align: center;
+  }
+  header h1 { font-size: 1.4rem; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+  #syncBar {
+    padding: 8px 14px; font-size: 0.82rem; text-align: center;
+    background: #e2e8f0; color: var(--muted);
+  }
+  #syncBar.synced { background: #d1fae5; color: #065f46; }
+  #syncBar.err { background: #fee2e2; color: #991b1b; }
+  #syncBar a { color: inherit; font-weight: 600; margin-left: 8px; cursor: pointer; text-decoration: underline; }
+  nav {
+    display: flex; background: var(--card); border-bottom: 2px solid var(--border);
+    position: sticky; top: 0; z-index: 10; overflow-x: auto;
+  }
+  nav button {
+    flex: 1; padding: 12px 8px; border: none; background: none; cursor: pointer;
+    font-size: 0.9rem; color: var(--muted); border-bottom: 3px solid transparent;
+    white-space: nowrap; font-weight: 600;
+  }
+  nav button.active { color: var(--primary); border-bottom-color: var(--primary); }
+  main { max-width: 900px; margin: 0 auto; padding: 16px; }
+  .card {
+    background: var(--card); border-radius: 12px; padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px;
+  }
+  .card h2 { font-size: 1.05rem; margin-bottom: 12px; color: var(--primary-dark); }
+  label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+  input, select {
+    width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 0.95rem; margin-bottom: 12px; background: white;
+  }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 130px; }
+  .btn {
+    display: inline-block; padding: 10px 18px; border: none; border-radius: 8px;
+    background: var(--primary); color: white; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; margin: 4px 4px 4px 0;
+  }
+  .btn:hover { background: var(--primary-dark); }
+  .btn-accent { background: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; }
+  td.amount, th.amount { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .month-block { margin-bottom: 20px; }
+  .month-header {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--primary-light); padding: 10px 12px; border-radius: 8px; margin-bottom: 6px;
+    flex-wrap: wrap; gap: 6px;
+  }
+  .month-header h3 { font-size: 1rem; color: var(--primary-dark); }
+  .month-summary { font-size: 0.85rem; text-align: right; }
+  .month-summary strong { color: var(--primary-dark); font-size: 1rem; }
+  .neg { color: var(--danger); }
+  .badge {
+    display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+    background: var(--primary-light); color: var(--primary-dark); margin-left: 4px;
+  }
+  .badge.adv { background: #fef3c7; color: #92400e; }
+  .badge.ded { background: #fee2e2; color: #991b1b; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .stat {
+    background: var(--primary-light); border-radius: 10px; padding: 12px; text-align: center;
+  }
+  .stat .num { font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); }
+  .stat .lbl { font-size: 0.75rem; color: var(--muted); }
+  .tab { display: none; }
+  .tab.active { display: block; }
+  .empty { text-align: center; color: var(--muted); padding: 30px; font-size: 0.9rem; }
+  .hint { font-size: 0.78rem; color: var(--muted); margin-top: -8px; margin-bottom: 12px; }
+  .year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+
+  /* Receipt styles */
+  #receiptArea {
+    background: white; border: 1px solid var(--border); border-radius: 8px;
+    padding: 28px; max-width: 700px; margin: 0 auto; font-size: 0.92rem;
+  }
+  #receiptArea .r-header { text-align: center; border-bottom: 2px solid var(--text); padding-bottom: 12px; margin-bottom: 16px; }
+  #receiptArea .r-header h2 { font-size: 1.2rem; letter-spacing: 1px; }
+  #receiptArea .r-header p { font-size: 0.85rem; color: var(--muted); }
+  #receiptArea table { margin: 12px 0; }
+  #receiptArea .r-total td { font-weight: 700; border-top: 2px solid var(--text); border-bottom: none; }
+  #receiptArea .r-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; font-size: 0.88rem; }
+  .sig-row { display: flex; gap: 30px; margin-top: 50px; flex-wrap: wrap; }
+  .sig-box { flex: 1; min-width: 200px; text-align: center; }
+  .sig-line { border-top: 1.5px solid var(--text); padding-top: 6px; font-size: 0.82rem; }
+  .ack { margin-top: 24px; font-size: 0.85rem; font-style: italic; }
+
   @media print {
-    header, nav, #status, .noprint { display: none !important; }
-    body { background: #fff; }
-    .card { box-shadow: none; }
+    body * { visibility: hidden; }
+    #receiptArea, #receiptArea * { visibility: visible; }
+    #receiptArea {
+      position: absolute; left: 0; top: 0; width: 100%;
+      border: none; padding: 10mm; box-shadow: none;
+    }
+  }
+  @media (max-width: 600px) {
+    main { padding: 10px; }
+    th, td { padding: 6px 4px; font-size: 0.82rem; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Payroll</h1>
-  <button onclick="load(true)">🔄 Refresh</button>
+  <h1>🏠 Helper Payroll System</h1>
+  <p>Salary and Holiday all-in-one</p>
 </header>
-<div id="status">Loading…</div>
+
+<div id="syncBar">Loading data…</div>
 
 <nav>
-  <button class="active" data-tab="payroll">Payroll</button>
-  <button data-tab="receipt">Receipt</button>
-  <button data-tab="holidays">Holidays</button>
+  <button class="active" onclick="showTab('payroll', this)">💰 Payroll</button>
+  <button onclick="showTab('receipt', this)">🧾 Receipt</button>
+  <button onclick="showTab('leave', this)">🏖️ Holidays</button>
 </nav>
 
 <main>
-  <section id="tab-payroll"></section>
-  <section id="tab-receipt" class="hidden"></section>
-  <section id="tab-holidays" class="hidden"></section>
+
+<!-- ============ PAYROLL TAB ============ -->
+<div id="tab-payroll" class="tab active">
+  <div class="card">
+    <h2>📊 Yearly Summary (Net Paid)</h2>
+    <div class="year-grid" id="yearSummary"></div>
+  </div>
+
+  <div class="card">
+    <h2>📋 All Records</h2>
+    <div id="entriesList"></div>
+  </div>
+</div>
+
+<!-- ============ RECEIPT TAB ============ -->
+<div id="tab-receipt" class="tab">
+  <div class="card">
+    <h2>🧾 Print Receipt</h2>
+    <div class="row">
+      <div>
+        <label>Select Month</label>
+        <select id="receiptMonth" onchange="renderReceipt()"></select>
+      </div>
+    </div>
+    <button class="btn btn-accent" onclick="window.print()">🖨️ Print</button>
+  </div>
+  <div id="receiptArea"></div>
+</div>
+
+<!-- ============ LEAVE TAB ============ -->
+<div id="tab-leave" class="tab">
+  <div class="card">
+    <h2>🏖️ Annual Leave</h2>
+    <div class="stat-grid" id="leaveStats"></div>
+    <p class="hint" style="margin-top:12px;">Formula: Days elapsed × Leave per 2 years ÷ Total contract days, minus leave taken.</p>
+  </div>
+
+  <div class="card">
+    <h2>📅 Statutory Holidays</h2>
+    <table>
+      <thead><tr><th>Date</th><th>Holiday</th></tr></thead>
+      <tbody id="shList"></tbody>
+    </table>
+  </div>
+</div>
+
 </main>
 
 <script>
-/* =====================================================================
-   CONFIG — 如果 helper.html Export 出嚟嘅 data.json 欄位名唔同，
-   只需要改呢一段。
-   ===================================================================== */
-const DATA_URL = 'data.json';
-const F = {
-  entries:   'entries',        // array of records
-  meta:      'meta',           // { lastModified }
-  settings:  'settings',       // object below
-  employer:  'employer',
-  worker:    'worker',
-  salary:    'salary',         // current monthly salary (number)
-  start:     'contractStart',  // YYYY-MM-DD
-  end:       'contractEnd',    // YYYY-MM-DD
-  leaveTaken:'leaveTaken',     // number
-  leaveTotal:'leaveTotal',     // number (two-year total, default 14)
-  // entry fields
-  id: 'id', date: 'date', cat: 'category', amt: 'amount', note: 'note'
-};
-const DAYS_PER_MONTH = 30.4375;
-
+// ================= DATA =================
 const CAT_LABEL = {
-  salary: 'Salary', buyout: 'Holiday Buyout', sh: 'Statutory Holiday',
-  bonus: 'Bonus', advance: 'Advance', deduction: 'Deduction', other: 'Other'
-};
-const SUBTRACT = new Set(['advance', 'deduction']);
-
-/* 2026 法定假期 — 勞工處官方 (15 日) */
-const STAT_HOLIDAYS = {
-  2026: [
-    ['2026-01-01', "New Year's Day"],
-    ['2026-02-17', "Lunar New Year's Day"],
-    ['2026-02-18', 'Second day of Lunar New Year'],
-    ['2026-02-19', 'Third day of Lunar New Year'],
-    ['2026-04-05', 'Ching Ming Festival'],
-    ['2026-04-06', 'Easter Monday (new from 2026)'],
-    ['2026-05-01', 'Labour Day'],
-    ['2026-05-24', 'Birthday of the Buddha'],
-    ['2026-06-19', 'Tuen Ng Festival'],
-    ['2026-07-01', 'HKSAR Establishment Day'],
-    ['2026-09-26', 'Day after Mid-Autumn Festival'],
-    ['2026-10-01', 'National Day'],
-    ['2026-10-18', 'Chung Yeung Festival'],
-    ['2026-12-25', 'Christmas Day (or 22 Dec Winter Solstice, employer\'s option)'],
-    ['2026-12-26', 'First weekday after Christmas']
-  ]
-  // 其他年份：由 helper.html 抄過嚟
+  salary: 'Salary', buyout: 'Buyout', sh: 'SH Bonus', bonus: 'Bonus',
+  advance: 'Advance', deduction: 'Deduct', other: 'Other'
 };
 
-/* ===================================================================== */
-let D = null;   // loaded data
+let state = null; // loaded from data.json only
 
-const $ = s => document.querySelector(s);
-const fmt = n => '$' + Math.round(n).toLocaleString('en-HK');
-const fmtDate = s => { const d = new Date(s); return isNaN(d) ? s : d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); };
-const ym = s => s.slice(0, 7);
-const ymLabel = s => new Date(s + '-01').toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// 同 helper.html 一樣 — 更新時兩邊一齊改
+const SH_HOLIDAYS = [
+  ['2026-07-01','HKSAR Establishment Day'],
+  ['2026-09-26','Day after Mid-Autumn Festival'],
+  ['2026-10-01','National Day'],
+  ['2026-10-19','Chung Yeung Festival'],
+  ['2026-12-25','Christmas Day'],
+  ['2026-12-26','Boxing Day'],
+  ['2027-01-01','New Year\'s Day'],
+  ['2027-02-06','Lunar New Year Day 1'],
+  ['2027-02-08','Lunar New Year Day 2'],
+  ['2027-02-09','Lunar New Year Day 3'],
+  ['2027-03-26','Easter Holiday 1'],
+  ['2027-03-27','Easter Holiday 2'],
+  ['2027-03-29','Easter Holiday 3'],
+  ['2027-04-05','Ching Ming Festival'],
+  ['2027-05-01','Labour Day'],
+  ['2027-05-13','Buddha\'s Birthday'],
+  ['2027-06-09','Dragon Boat Festival'],
+  ['2027-07-01','HKSAR Establishment Day'],
+  ['2027-09-16','Day after Mid-Autumn Festival']
+];
 
-function get(o, k, d) { return (o && o[k] !== undefined && o[k] !== null) ? o[k] : d; }
-function entries() { return (get(D, F.entries, []) || []).slice().sort((a, b) => a[F.date] < b[F.date] ? 1 : -1); }
-function settings() { return get(D, F.settings, {}); }
-function dailyRate(salary) { return Math.round(salary / DAYS_PER_MONTH); }
-
-/* ---------- load ---------- */
-async function load(manual) {
-  const st = $('#status');
-  st.className = ''; st.textContent = 'Loading…';
+// ================= LOAD =================
+async function fetchRemote() {
+  const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('not found');
+  const remote = await res.json();
+  if (!remote || !remote.entries || !remote.settings) throw new Error('bad format');
+  return remote;
+}
+async function loadData() {
+  const bar = document.getElementById('syncBar');
+  bar.className = ''; bar.textContent = 'Loading data…';
   try {
-    const r = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    D = await r.json();
-    const lm = get(get(D, F.meta, {}), 'lastModified', null);
-    st.textContent = 'Last updated: ' + (lm ? new Date(lm).toLocaleString('en-GB') : 'unknown');
+    state = await fetchRemote();
+    const t = (state.meta && state.meta.lastModified) ? new Date(state.meta.lastModified).toLocaleString('en-HK') : '—';
+    bar.className = 'synced';
+    bar.innerHTML = '✅ Last updated: ' + t + '<a onclick="loadData()">↻ Refresh</a>';
     renderAll();
-  } catch (e) {
-    st.className = 'err';
-    st.textContent = '暫時未能載入 / Unable to load data. ' + (manual ? 'Please try again later.' : 'Tap Refresh to retry.');
-    if (!D) ['payroll', 'receipt', 'holidays'].forEach(t => $('#tab-' + t).innerHTML = '');
+  } catch(e) {
+    bar.className = 'err';
+    bar.innerHTML = '⚠️ Unable to load records right now.<a onclick="loadData()">↻ Try again</a>';
+    if (!state) {
+      document.getElementById('yearSummary').innerHTML = '';
+      document.getElementById('entriesList').innerHTML = '<div class="empty">No data available</div>';
+    }
   }
 }
 
-/* ---------- tabs ---------- */
-document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x === b));
-  ['payroll', 'receipt', 'holidays'].forEach(t => $('#tab-' + t).classList.toggle('hidden', t !== b.dataset.tab));
-});
+// ================= HELPERS =================
+function fmt(n) { return n.toLocaleString('en-HK', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function monthKey(d) { return d.slice(0,7); }
+function monthName(key) {
+  const [y,m] = key.split('-');
+  const names = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return names[parseInt(m)-1] + ' ' + y;
+}
+function todayStr() { return new Date().toISOString().slice(0,10); }
 
-/* ---------- totals ---------- */
-function monthTotals(list) {
+// ================= TABS =================
+function showTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (!state) return;
+  if (name === 'receipt') { buildMonthOptions(); renderReceipt(); }
+  if (name === 'leave') renderLeave();
+}
+
+// ================= PAYROLL =================
+function monthTotals(entries) {
   let earned = 0, advance = 0;
-  for (const e of list) {
-    const a = Number(e[F.amt]) || 0, c = e[F.cat];
-    if (c === 'advance') advance += a;
-    else if (c === 'deduction') earned -= a;
-    else earned += a;
-  }
-  return { earned, advance, net: earned - advance };
+  entries.forEach(e => {
+    if (e.category === 'advance') advance += e.amount;
+    else if (e.category === 'deduction') earned -= Math.abs(e.amount);
+    else earned += e.amount;
+  });
+  return { earned, advance, payable: earned - advance };
+}
+function groupByMonth() {
+  const groups = {};
+  state.entries.forEach(e => {
+    const k = monthKey(e.date);
+    (groups[k] = groups[k] || []).push(e);
+  });
+  return groups;
+}
+function renderYearSummary() {
+  const groups = groupByMonth();
+  const years = {};
+  Object.keys(groups).forEach(k => {
+    const y = k.slice(0,4);
+    years[y] = (years[y] || 0) + monthTotals(groups[k]).payable;
+  });
+  const el = document.getElementById('yearSummary');
+  const keys = Object.keys(years).sort().reverse();
+  if (!keys.length) { el.innerHTML = '<div class="empty">No data yet</div>'; return; }
+  el.innerHTML = keys.map(y =>
+    `<div class="stat"><div class="num">$${fmt(years[y])}</div><div class="lbl">${y} Total Paid</div></div>`).join('');
+}
+function renderEntries() {
+  renderYearSummary();
+  const groups = groupByMonth();
+  const keys = Object.keys(groups).sort().reverse();
+  const el = document.getElementById('entriesList');
+  if (!keys.length) { el.innerHTML = '<div class="empty">No records yet</div>'; return; }
+  let html = '';
+  keys.forEach(k => {
+    const entries = groups[k].sort((a,b) => a.date.localeCompare(b.date));
+    const t = monthTotals(entries);
+    html += `<div class="month-block">
+      <div class="month-header">
+        <h3>${monthName(k)}</h3>
+        <div class="month-summary">
+          Earned: HK$${fmt(t.earned)}
+          ${t.advance ? ` &nbsp;|&nbsp; Advance: <span class="neg">−HK$${fmt(t.advance)}</span>` : ''}
+          &nbsp;|&nbsp; Net: <strong>HK$${fmt(t.payable)}</strong>
+        </div>
+      </div>
+      <table><thead><tr><th>Date</th><th>Item</th><th class="amount">Amount</th></tr></thead><tbody>`;
+    entries.forEach(e => {
+      const isNeg = e.category === 'advance' || e.category === 'deduction' || e.amount < 0;
+      const badgeClass = e.category === 'advance' ? 'adv' : (e.category === 'deduction' ? 'ded' : '');
+      html += `<tr>
+        <td>${e.date}</td>
+        <td>${e.item}<span class="badge ${badgeClass}">${CAT_LABEL[e.category] || e.category}</span></td>
+        <td class="amount ${isNeg ? 'neg' : ''}">${e.category==='advance'||e.category==='deduction' ? '−' : ''}${fmt(Math.abs(e.amount))}</td>
+      </tr>`;
+    });
+    html += '</tbody></table></div>';
+  });
+  el.innerHTML = html;
 }
 
-/* ---------- Payroll tab ---------- */
-function renderPayroll() {
-  const list = entries();
-  if (!list.length) { $('#tab-payroll').innerHTML = '<div class="card">No records.</div>'; return; }
-
-  // group by month
-  const byMonth = {};
-  for (const e of list) (byMonth[ym(e[F.date])] ||= []).push(e);
-  const months = Object.keys(byMonth).sort().reverse();
-
-  // yearly summary
-  const byYear = {};
-  for (const m of months) {
-    const y = m.slice(0, 4), t = monthTotals(byMonth[m]);
-    const Y = byYear[y] ||= { earned: 0, advance: 0, net: 0 };
-    Y.earned += t.earned; Y.advance += t.advance; Y.net += t.net;
-  }
-
-  let h = `<div class="card"><h2>Yearly Summary</h2><table>
-    <tr><th>Year</th><th class="num">Earned</th><th class="num">Advance</th><th class="num">Net</th></tr>`;
-  for (const y of Object.keys(byYear).sort().reverse()) {
-    const t = byYear[y];
-    h += `<tr><td>${y}</td><td class="num">${fmt(t.earned)}</td><td class="num neg">${t.advance ? '−' + fmt(t.advance) : '–'}</td><td class="num"><b>${fmt(t.net)}</b></td></tr>`;
-  }
-  h += `</table></div>`;
-
-  h += `<div class="card"><h2>All Records</h2><table>`;
-  for (const m of months) {
-    const t = monthTotals(byMonth[m]);
-    h += `<tr class="month-head"><td colspan="3">${ymLabel(m)}</td></tr>`;
-    for (const e of byMonth[m].sort((a, b) => a[F.date] < b[F.date] ? 1 : -1)) {
-      const neg = SUBTRACT.has(e[F.cat]);
-      h += `<tr>
-        <td style="white-space:nowrap">${fmtDate(e[F.date])}</td>
-        <td><span class="tag">${CAT_LABEL[e[F.cat]] || esc(e[F.cat])}</span> ${esc(e[F.note])}</td>
-        <td class="num ${neg ? 'neg' : ''}">${neg ? '−' : ''}${fmt(e[F.amt])}</td></tr>`;
-    }
-    h += `<tr class="month-total"><td></td><td>Earned ${fmt(t.earned)}${t.advance ? ` · Advance −${fmt(t.advance)}` : ''}</td><td class="num">Net ${fmt(t.net)}</td></tr>`;
-  }
-  h += `</table></div>`;
-  $('#tab-payroll').innerHTML = h;
+// ================= RECEIPT =================
+function buildMonthOptions() {
+  const keys = Object.keys(groupByMonth()).sort().reverse();
+  const sel = document.getElementById('receiptMonth');
+  const cur = sel.value;
+  sel.innerHTML = keys.map(k => `<option value="${k}">${monthName(k)}</option>`).join('');
+  if (keys.includes(cur)) sel.value = cur;
 }
-
-/* ---------- Receipt tab ---------- */
 function renderReceipt() {
-  const list = entries();
-  const months = [...new Set(list.map(e => ym(e[F.date])))].sort().reverse();
-  if (!months.length) { $('#tab-receipt').innerHTML = '<div class="card">No records.</div>'; return; }
-  const sel = $('#receipt-month') ? $('#receipt-month').value : months[0];
-  const m = months.includes(sel) ? sel : months[0];
-  const rows = list.filter(e => ym(e[F.date]) === m && e[F.cat] !== 'advance').sort((a, b) => a[F.date] < b[F.date] ? -1 : 1);
-  const t = monthTotals(list.filter(e => ym(e[F.date]) === m));
-  const s = settings();
+  const k = document.getElementById('receiptMonth').value;
+  const area = document.getElementById('receiptArea');
+  if (!k) { area.innerHTML = '<div class="empty">No records available for a receipt</div>'; return; }
+  const entries = groupByMonth()[k].sort((a,b) => a.date.localeCompare(b.date));
+  const t = monthTotals(entries);
+  const s = state.settings;
+  let rows = '';
+  entries.filter(e => e.category !== 'advance').forEach(e => {
+    const neg = e.category === 'deduction' || e.amount < 0;
+    rows += `<tr><td>${e.date}</td><td>${e.item}</td><td class="amount">${neg?'−':''}${fmt(Math.abs(e.amount))}</td></tr>`;
+  });
+  const advances = entries.filter(e => e.category === 'advance');
+  let advRows = advances.map(e =>
+    `<tr><td>${e.date}</td><td>Less: ${e.item}</td><td class="amount neg">−${fmt(e.amount)}</td></tr>`).join('');
 
-  let h = `<div class="card noprint" style="display:flex;gap:10px;align-items:center;justify-content:space-between">
-    <label>Month <select id="receipt-month" onchange="renderReceipt()">${months.map(x => `<option value="${x}" ${x === m ? 'selected' : ''}>${ymLabel(x)}</option>`).join('')}</select></label>
-    <button onclick="print()">🖨 Print</button></div>`;
-
-  h += `<div class="card receipt">
-    <h3>Salary Receipt — ${ymLabel(m)}</h3>
-    <div style="font-size:13px;color:#555;margin-bottom:12px">Employer: <b>${esc(get(s, F.employer, ''))}</b> &nbsp;·&nbsp; Helper: <b>${esc(get(s, F.worker, ''))}</b></div>
-    <table>`;
-  for (const e of rows) {
-    const neg = e[F.cat] === 'deduction';
-    h += `<tr><td>${fmtDate(e[F.date])}</td><td>${CAT_LABEL[e[F.cat]] || esc(e[F.cat])} ${esc(e[F.note])}</td><td class="num ${neg ? 'neg' : ''}">${neg ? '−' : ''}${fmt(e[F.amt])}</td></tr>`;
-  }
-  h += `<tr class="month-total"><td colspan="2">Total Earned</td><td class="num">${fmt(t.earned)}</td></tr>`;
-  if (t.advance) h += `<tr><td colspan="2">Less: Advance received</td><td class="num neg">−${fmt(t.advance)}</td></tr>`;
-  h += `<tr class="month-total"><td colspan="2"><b>Net Paid</b></td><td class="num"><b>${fmt(t.net)}</b></td></tr></table>
-    <div class="sig"><div>Employer</div><div>Helper</div></div>
-    </div>`;
-  $('#tab-receipt').innerHTML = h;
+  area.innerHTML = `
+    <div class="r-header">
+      <h2>SALARY RECEIPT</h2>
+      <p>${monthName(k)}</p>
+    </div>
+    <div class="r-meta">
+      <span><strong>Employer:</strong> ${s.employer || '____________'}</span>
+      <span><strong>Employee:</strong> ${s.helper || '____________'}</span>
+    </div>
+    <table>
+      <thead><tr><th>Date</th><th>Item</th><th class="amount">Amount (HK$)</th></tr></thead>
+      <tbody>
+        ${rows}
+        <tr class="r-total"><td></td><td>Total</td><td class="amount">${fmt(t.earned)}</td></tr>
+        ${advRows}
+        ${advances.length ? `<tr class="r-total"><td></td><td>Net Payable</td><td class="amount">${fmt(t.payable)}</td></tr>` : ''}
+      </tbody>
+    </table>
+    <p class="ack">I hereby acknowledge receipt of the sum of <strong>HK$${fmt(t.payable)}</strong> being my salary and allowances for ${monthName(k)}.</p>
+    <div class="sig-row">
+      <div class="sig-box"><div style="height:40px;"></div><div class="sig-line">${s.employer || '____________'}<br>Employer</div></div>
+      <div class="sig-box"><div style="height:40px;"></div><div class="sig-line">${s.helper || '____________'}<br>Employee</div></div>
+    </div>
+  `;
 }
 
-/* ---------- Holidays tab ---------- */
-function renderHolidays() {
-  const s = settings();
-  const start = new Date(get(s, F.start, '')), end = new Date(get(s, F.end, ''));
-  const taken = Number(get(s, F.leaveTaken, 0)) || 0;
-  const total = Number(get(s, F.leaveTotal, 14)) || 14;
-  const salary = Number(get(s, F.salary, 0)) || 0;
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-
-  let h = '';
-  if (!isNaN(start) && !isNaN(end)) {
-    const DAY = 86400000;
-    const totalDays = Math.round((end - start) / DAY) + 1;
-    const passed = Math.min(Math.max(Math.round((today - start) / DAY) + 1, 0), totalDays);
-    const accrued = passed * total / totalDays;
-    const balance = accrued - taken;
-    h += `<div class="card"><h2>Annual Leave</h2>
-      <div class="big">${balance.toFixed(1)} <span style="font-size:14px;font-weight:400;color:#666">days available</span></div>
-      <div class="kv" style="margin-top:10px">
-        <span>Contract</span><b>${fmtDate(get(s, F.start))} → ${fmtDate(get(s, F.end))}</b>
-        <span>Days passed</span><b>${passed} / ${totalDays}</b>
-        <span>Accrued so far</span><b>${accrued.toFixed(1)} of ${total}</b>
-        <span>Leave taken</span><b>${taken}</b>
-        ${salary ? `<span>Daily rate</span><b>${fmt(dailyRate(salary))} <span style="color:#888;font-weight:400">(${fmt(salary)} ÷ ${DAYS_PER_MONTH})</span></b>` : ''}
-      </div></div>`;
-  } else {
-    h += `<div class="card">Contract dates not available.</div>`;
-  }
-
-  for (const y of Object.keys(STAT_HOLIDAYS).sort()) {
-    h += `<div class="card"><h2>Statutory Holidays ${y}</h2><table>`;
-    for (const [d, n] of STAT_HOLIDAYS[y]) {
-      const past = new Date(d) < today;
-      h += `<tr style="${past ? 'color:#999' : ''}"><td style="white-space:nowrap">${fmtDate(d)}</td><td>${n}</td></tr>`;
-    }
-    h += `</table></div>`;
-  }
-  $('#tab-holidays').innerHTML = h;
+// ================= LEAVE =================
+function renderLeave() {
+  const s = state.settings;
+  const start = new Date(s.contractStart);
+  const end = new Date(s.contractEnd);
+  const today = new Date();
+  const totalDays = Math.round((end - start) / 86400000) + 1;
+  let elapsed = Math.round((today - start) / 86400000) + 1;
+  elapsed = Math.max(0, Math.min(elapsed, totalDays));
+  const eligible = elapsed * s.leavePer2Years / totalDays;
+  const balance = eligible - (s.leaveTaken || 0);
+  document.getElementById('leaveStats').innerHTML = `
+    <div class="stat"><div class="num">${elapsed}</div><div class="lbl">Days Elapsed</div></div>
+    <div class="stat"><div class="num">${s.leavePer2Years}</div><div class="lbl">Leave per 2 Years</div></div>
+    <div class="stat"><div class="num">${eligible.toFixed(1)}</div><div class="lbl">Eligible Today</div></div>
+    <div class="stat"><div class="num">${(s.leaveTaken||0)}</div><div class="lbl">Taken</div></div>
+    <div class="stat" style="background:#fef3c7;"><div class="num" style="color:#92400e;">${balance.toFixed(1)}</div><div class="lbl">Balance</div></div>
+  `;
+  const today0 = todayStr();
+  document.getElementById('shList').innerHTML = SH_HOLIDAYS.map(([d, n]) =>
+    `<tr style="${d < today0 ? 'opacity:0.45;' : ''}"><td>${d}${d < today0 ? ' ✔' : ''}</td><td>${n}</td></tr>`).join('');
 }
 
-function renderAll() { renderPayroll(); renderReceipt(); renderHolidays(); }
-
-/* ---------- auto refresh when returning to the page ---------- */
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') load(false); });
-load(false);
+// ================= RENDER ALL / INIT =================
+function renderAll() {
+  renderEntries();
+  buildMonthOptions();
+  renderReceipt();
+  renderLeave();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') loadData();
+});
+loadData();
 </script>
 </body>
 </html>
