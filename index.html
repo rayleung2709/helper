@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Handbook 家庭手冊</title>
+<style>
+  :root {
+    --primary: #0f766e;
+    --primary-dark: #115e59;
+    --primary-light: #ccfbf1;
+    --accent: #f59e0b;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --danger: #dc2626;
+    --border: #e2e8f0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang HK", "Microsoft JhengHei", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; padding: 20px 16px; text-align: center;
+  }
+  header h1 { font-size: 1.4rem; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+  nav {
+    display: flex; background: var(--card); border-bottom: 2px solid var(--border);
+    position: sticky; top: 0; z-index: 10; overflow-x: auto;
+  }
+  nav button {
+    flex: 1; padding: 12px 8px; border: none; background: none; cursor: pointer;
+    font-size: 0.9rem; color: var(--muted); border-bottom: 3px solid transparent;
+    white-space: nowrap; font-weight: 600;
+  }
+  nav button.active { color: var(--primary); border-bottom-color: var(--primary); }
+  main { max-width: 900px; margin: 0 auto; padding: 16px; }
+  .card {
+    background: var(--card); border-radius: 12px; padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px;
+  }
+  .card h2 { font-size: 1.05rem; margin-bottom: 12px; color: var(--primary-dark); }
+  .card h2 .zh { font-weight: 500; }
+  .tab { display: none; }
+  .tab.active { display: block; }
+  .zh { display: block; font-size: 0.82rem; color: var(--muted); }
+  .hint { font-size: 0.78rem; color: var(--muted); margin-top: 8px; }
+  .updated { font-size: 0.78rem; color: var(--muted); text-align: right; margin-bottom: 8px; }
+
+  /* Contact */
+  .contact-list { display: flex; flex-direction: column; gap: 8px; }
+  .contact {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg);
+  }
+  .contact .name { font-weight: 600; }
+  .contact .rel { font-size: 0.8rem; color: var(--muted); }
+  .contact a.tel {
+    background: var(--primary); color: white; text-decoration: none; padding: 8px 14px;
+    border-radius: 8px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .contact a.tel.outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .addr { font-size: 1rem; font-weight: 600; line-height: 1.6; }
+  .btn {
+    display: inline-block; padding: 8px 14px; border: none; border-radius: 8px;
+    background: var(--primary); color: white; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; margin: 8px 6px 0 0; text-decoration: none;
+  }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  th, td { padding: 8px 6px; text-align: center; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; }
+  td.big { font-size: 1.3rem; font-weight: 700; }
+  .emergency {
+    background: #fef2f2; border: 2px solid var(--danger); border-radius: 12px; padding: 14px 16px;
+    color: var(--danger); font-weight: 700; font-size: 1rem; line-height: 1.6;
+  }
+  .emergency .zh { color: #b91c1c; font-weight: 600; }
+  .emergency .chain { font-size: 1.15rem; letter-spacing: 0.5px; }
+
+  /* Rules / School */
+  .rules { list-style: none; counter-reset: rule; }
+  .rules > li {
+    position: relative; padding: 10px 0 10px 38px; border-bottom: 1px solid var(--border);
+    counter-increment: rule;
+  }
+  .rules > li:last-child { border-bottom: none; }
+  .rules > li::before {
+    content: "(" counter(rule) ")"; position: absolute; left: 0; top: 10px;
+    color: var(--primary); font-weight: 700; font-size: 0.85rem;
+  }
+  .rules ul.sub { list-style: none; margin-top: 6px; }
+  .rules ul.sub li { padding: 6px 10px; margin-top: 4px; background: #fef2f2; border-left: 3px solid var(--danger); border-radius: 4px; font-weight: 600; }
+  .rules ul.sub li .zh { font-weight: 500; }
+  .plain { list-style: none; }
+  .plain > li { padding: 8px 0 8px 22px; position: relative; border-bottom: 1px solid var(--border); }
+  .plain > li:last-child { border-bottom: none; }
+  .plain > li::before { content: "•"; position: absolute; left: 6px; color: var(--primary); font-weight: 700; }
+  .plain ul { list-style: none; margin-top: 6px; }
+  .plain ul li { padding: 4px 0 4px 18px; position: relative; }
+  .plain ul li::before { content: "–"; position: absolute; left: 4px; color: var(--muted); }
+  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: 0.95rem; }
+  .kv dt { color: var(--muted); font-weight: 600; font-size: 0.85rem; padding-top: 2px; }
+  .kv dd a { color: var(--primary); font-weight: 600; text-decoration: none; }
+  .warn { background: #fef3c7; border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin-top: 10px; font-weight: 600; }
+  .warn .zh { color: #92400e; font-weight: 500; }
+  .no { background: #fef2f2; border-left: 4px solid var(--danger); padding: 10px 12px; border-radius: 6px; margin-top: 10px; font-weight: 600; }
+  .no .zh { color: #b91c1c; font-weight: 500; }
+
+  /* Payroll iframe */
+  #payrollFrame { width: 100%; height: calc(100vh - 150px); min-height: 600px; border: none; border-radius: 12px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .frame-bar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+  .frame-bar a { font-size: 0.82rem; color: var(--primary); font-weight: 600; text-decoration: none; }
+
+  @media (max-width: 600px) {
+    main { padding: 10px; }
+    .contact { padding: 8px 10px; }
+    .contact a.tel { padding: 7px 10px; font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏠 Our Home Handbook</h1>
+  <p>Contact · House Rules · School · Payroll &nbsp;|&nbsp; 聯絡 · 家規 · 學校 · 薪金</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('contact', this)">📞 Contact</button>
+  <button onclick="showTab('rules', this)">📜 House Rules</button>
+  <button onclick="showTab('school', this)">🏫 School</button>
+  <button onclick="showTab('payroll', this)">💰 Payroll</button>
+</nav>
+
+<main>
+
+<!-- ============ TAB 1: CONTACT ============ -->
+<div id="tab-contact" class="tab active">
+
+  <div class="emergency">
+    🚨 In case of Emergency, call:<br>
+    <span class="chain">Ray → Sherina → 999 → Ken → Chris → Jeff</span><br>
+    Do not disclose our contact details or address to anyone except in Emergency.
+    <span class="zh">🚨 緊急情況下，依次致電：Ray → Sherina → 999 → Ken → Chris → Jeff。除緊急情況外，切勿向任何人透露我們的聯絡資料或地址。</span>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h2>👨‍👩‍👧 Family Members <span class="zh">家庭成員</span></h2>
+    <div class="contact-list">
+      <div class="contact"><div><div class="name">Ray (Tsz-Hang LEUNG)</div><div class="rel">Employer 僱主</div></div><a class="tel" href="tel:+85298677100">9867-7100</a></div>
+      <div class="contact"><div><div class="name">Sherina (Ngar-Kei LUI)</div><div class="rel">Employer 僱主</div></div><a class="tel" href="tel:+85293863772">9386-3772</a></div>
+      <div class="contact"><div><div class="name">Sheena</div><div class="rel">Helper 工人姐姐</div></div><a class="tel" href="tel:+85298484570">9848-4570</a></div>
+      <div class="contact"><div><div class="name">Our Home</div><div class="rel">Home phone 家居電話</div></div><a class="tel" href="tel:+85237032184">3703-2184</a></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🗣️ Other Family Members (English speaking) <span class="zh">其他家人（能說英語）</span></h2>
+    <div class="contact-list">
+      <div class="contact"><div><div class="name">Ken</div><div class="rel">Ray's elder sister · Ray 的姐姐</div></div><a class="tel outline" href="tel:+85294748771">9474-8771</a></div>
+      <div class="contact"><div><div class="name">Chris</div><div class="rel">Ray's elder brother's wife · Ray 的大嫂</div></div><a class="tel outline" href="tel:+85291022908">9102-2908</a></div>
+      <div class="contact"><div><div class="name">Jeff</div><div class="rel">Sherina's younger brother · Sherina 的弟弟</div></div><a class="tel outline" href="tel:+85293547898">9354-7898</a></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📍 Address <span class="zh">地址</span></h2>
+    <div class="addr" id="addrEn">Suite 4608, 46/F, Tower E, Galaxia,<br>3 Lung Poon Street, Diamond Hill, Kowloon</div>
+    <div class="addr" id="addrZh" style="margin-top:6px; color:var(--primary-dark);">九龍鑽石山龍蟠街 3 號星河明居 E 座 46 樓 4608 室</div>
+    <button class="btn" onclick="copyText('addrEn','Address copied ✔')">📋 Copy English</button>
+    <button class="btn" onclick="copyText('addrZh','地址已複製 ✔')">📋 Copy 中文</button>
+    <a class="btn btn-outline" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Galaxia+3+Lung+Poon+Street+Diamond+Hill">🗺️ Map</a>
+    <p class="hint">Show the Chinese address to taxi drivers. 搭的士時可向司機出示中文地址。</p>
+  </div>
+
+  <div class="card">
+    <h2>👶 Full Name of the Baby <span class="zh">寶寶全名</span></h2>
+    <table>
+      <thead><tr><th>Family name 姓</th><th>Middle name</th><th>Given name 名</th></tr></thead>
+      <tbody>
+        <tr><td class="big">梁</td><td class="big">—</td><td class="big">卓 喬</td></tr>
+        <tr><td class="big">LEUNG</td><td class="big">Theodore</td><td class="big">Cheuk-Kiu</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">Write as: <strong>LEUNG Theodore Cheuk-Kiu</strong> &nbsp;·&nbsp; Nickname: Theo</p>
+  </div>
+</div>
+
+<!-- ============ TAB 2: HOUSE RULES ============ -->
+<div id="tab-rules" class="tab">
+  <p class="updated">Last updated 最後更新: 2026-09-04</p>
+
+  <div class="card">
+    <h2>A. Basics <span class="zh">基本原則</span></h2>
+    <ol class="rules">
+      <li>We treat you as our sister and we expect you to treat our baby as yours too. We share the same house and you are part of our family. Keep open communication with us.
+        <span class="zh">我們視你如姊妹，也希望你把寶寶當作自己的孩子。我們同住一屋，你是我們家庭的一員。請與我們保持坦誠溝通。</span></li>
+      <li>Your every priority is the baby. Tell us immediately if the baby doesn't seem right.
+        <span class="zh">寶寶永遠是你的首要任務。若寶寶有任何異常，請立即告訴我們。</span></li>
+      <li>We trust you and have faith in you, you must be honest.
+        <span class="zh">我們信任你，你必須誠實。</span>
+        <ul class="sub">
+          <li>(a) You must not do anything that will harm us or the baby.<span class="zh">不得做任何傷害我們或寶寶的事。</span></li>
+          <li>(b) You must not steal anything or cheat us.<span class="zh">不得偷竊或欺騙我們。</span></li>
+          <li>(c) You must not borrow money or be a guarantor.<span class="zh">不得借錢或替人作擔保。</span></li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>B. Home Security <span class="zh">家居安全</span></h2>
+    <ol class="rules">
+      <li>What happens in this house stays in this house. Do not share our matters with outsiders.
+        <span class="zh">家事不外傳。不要與外人談及我們的事情。</span></li>
+      <li>Do not leave the baby alone, no matter how short the time is.
+        <span class="zh">無論時間多短，都不可讓寶寶獨自一人。</span></li>
+      <li>Do not bring anyone home.
+        <span class="zh">不得帶任何人回家。</span></li>
+      <li>You must not smoke or drink alcohol.
+        <span class="zh">不得吸煙或飲酒。</span></li>
+      <li>On holidays, return home before <strong>20:30</strong>. You cannot stay outside overnight.
+        <span class="zh">假期須於晚上 8 時 30 分前回家，不可在外過夜。</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>C. Baby Care <span class="zh">照顧寶寶</span></h2>
+    <ol class="rules">
+      <li>Wear clean, comfortable clothing suitable for child care. Wash hands with soap before caring for the baby.
+        <span class="zh">穿著乾淨、舒適及適合照顧幼兒的衣服。照顧寶寶前先用肥皂洗手。</span></li>
+      <li>Ensure all feeding equipment is sterilised before each use.
+        <span class="zh">確保所有餵食用具每次使用前已消毒。</span></li>
+      <li>Monitor the baby for any food allergies or indigestion.
+        <span class="zh">留意寶寶有否食物過敏或消化不良。</span></li>
+      <li>Keep the baby's bed safe and clean. Make sure the baby is sleeping on his back.
+        <span class="zh">保持寶寶的床安全清潔，確保寶寶仰睡。</span></li>
+      <li>Change diapers promptly to prevent rashes and discomfort. Dispose of diapers in a sanitary manner.
+        <span class="zh">及時更換尿片，以防紅疹及不適。以衞生方式棄置尿片。</span></li>
+      <li>Bathe the baby daily with baby-safe products. Never leave the baby unattended during bath.
+        <span class="zh">每天用嬰兒專用產品為寶寶洗澡。洗澡時絕不可讓寶寶無人看管。</span></li>
+      <li>Monitor the baby's health and report any symptoms of illness immediately. Give medication only as directed by us.
+        <span class="zh">留意寶寶健康狀況，如有任何病徵請立即報告。只可按我們的指示給藥。</span></li>
+      <li>Keep the environment free from hazards (e.g. sharp objects, small items that can be swallowed).
+        <span class="zh">保持環境沒有危險物品（如尖銳物品、可吞下的小物件）。</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>D. Cellphone <span class="zh">手提電話</span></h2>
+    <ol class="rules">
+      <li>Minimise the use of cellphone, especially if you are the only adult with the baby, no matter inside or outside the house.
+        <span class="zh">盡量減少使用手機，尤其當你是唯一與寶寶在一起的成人時，無論在家或外出。</span></li>
+      <li>If you need extra mobile data, you need to buy it from your own pocket.
+        <span class="zh">如需額外流動數據，須自費購買。</span></li>
+      <li>You can use our home WiFi after finishing your work.
+        <span class="zh">完成工作後可使用家中 WiFi。</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>E. Electrical Appliances <span class="zh">電器</span></h2>
+    <ol class="rules">
+      <li>Air conditioners may be used when it is higher than <strong>24°C</strong>, or if you have a pretty good reason.
+        <span class="zh">氣溫高於 24°C 或有充分理由時，可開冷氣。</span></li>
+      <li>Only turn on one air conditioner at a time when you are alone at home. You can use an electric fan with it.
+        <span class="zh">獨自在家時，一次只可開一部冷氣，可同時使用風扇。</span></li>
+      <li>Close all the windows and doors when the air conditioner is on.
+        <span class="zh">開冷氣時關閉所有門窗。</span></li>
+      <li>No television when you are alone at home with the baby. You may not hear the baby cry.
+        <span class="zh">獨自與寶寶在家時不可看電視，以免聽不到寶寶哭。</span></li>
+      <li>Switch off unnecessary electrical appliances when you are going out.
+        <span class="zh">外出時關掉不必要的電器。</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>F. Home Hygiene and Tidiness <span class="zh">家居衞生及整潔</span></h2>
+    <ol class="rules">
+      <li>Open all the windows to a small gap when the weather permits; close them for the night or when leaving the house.
+        <span class="zh">天氣許可時，把所有窗打開一小縫；晚上或外出時關窗。</span></li>
+      <li>Open all the curtains at daytime to allow sunshine.
+        <span class="zh">日間打開所有窗簾讓陽光進入。</span></li>
+      <li>Keep the kitchen and loo clean and dry at all times.
+        <span class="zh">隨時保持廚房及洗手間清潔乾爽。</span></li>
+      <li>Manually vacuum and mop the floor and scrub the bath <strong>every other day</strong>. Refill the robot water tank <strong>every day</strong>. Change the robot's mop sheet <strong>every 2 weeks</strong>.
+        <span class="zh">每兩天人手吸塵、拖地及刷浴缸。每天為掃地機械人加水。每兩星期更換機械人的拖布。</span></li>
+      <li>Ventilate (HI mode) the bathroom for 1 hour after use.
+        <span class="zh">洗手間使用後開抽氣扇（HI 強檔）1 小時。</span></li>
+      <li>Always maintain a high level of personal hygiene. Wash hands with soap when returning home from outside.
+        <span class="zh">時刻保持高度個人衞生。從外面回家後用肥皂洗手。</span></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ============ TAB 3: SCHOOL ============ -->
+<div id="tab-school" class="tab">
+  <div class="card">
+    <h2>📍 School Information <span class="zh">學校資料</span></h2>
+    <dl class="kv">
+      <dt>Name 名稱</dt><dd>Boxhill (Ma On Shan) International Preschool and Kindergarten<span class="zh">博士山國際幼稚園（馬鞍山）</span></dd>
+      <dt>Class 班別</dt><dd>Koala "A" (Pre-Nursery / PN)<span class="zh">幼兒班</span></dd>
+      <dt>Address 地址</dt><dd>G/F, Block 10, Vista Paradiso, Ma On Shan<span class="zh">馬鞍山聽濤雅苑第十座地下</span></dd>
+      <dt>Phone 電話</dt><dd><a href="tel:+85227506323">2750 6323</a></dd>
+      <dt>WhatsApp</dt><dd><a href="https://wa.me/85246211233" target="_blank" rel="noopener">4621 1233</a></dd>
+      <dt>School Bus 校車</dt><dd><a href="tel:+85292278769">9227 8769</a> (Miss Lau 劉小姐)</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h2>⏰ Daily Schedule &amp; Uniform <span class="zh">每日時間及校服</span></h2>
+    <ul class="plain">
+      <li>School Hours: <strong>9:00 AM – 12:00 PM</strong><span class="zh">上課時間：上午 9:00 – 12:00</span></li>
+      <li>Arrival Time: Between <strong>8:45 AM and 9:00 AM</strong>. Do not be late.<span class="zh">到校時間：上午 8:45 – 9:00，不可遲到。</span></li>
+      <li>Uniforms 校服:
+        <ul>
+          <li><strong>Monday &amp; Wednesday</strong>: P.E. uniform<span class="zh">星期一及三：體育服</span></li>
+          <li><strong>Tuesday, Thursday, Friday</strong>: Regular school uniform<span class="zh">星期二、四、五：普通校服</span></li>
+          <li><strong>Shoes</strong>: Arrive wearing colourful outdoor shoes. Pack his white indoor shoes (with velcro) to change into at school.<span class="zh">鞋：穿彩色戶外鞋到校，另備白色室內鞋（魔術貼）到校更換。</span></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🎒 Daily Packing List <span class="zh">每日書包物品</span></h2>
+    <div class="warn">Make sure everything has Theo's full English name on it.<span class="zh">所有物品必須寫上 Theo 的英文全名。</span></div>
+    <ul class="plain" style="margin-top:10px;">
+      <li>Pack these items in his school bag every day 每天放入書包:
+        <ul>
+          <li>Student Handbook (the school keeps it on Thursdays)<span class="zh">學生手冊（星期四學校會收起）</span></li>
+          <li>Water bottle (cleaned and filled)<span class="zh">水壺（洗淨及裝滿）</span></li>
+          <li>Small snack box (cleaned, with lid)<span class="zh">小食盒（洗淨、有蓋）</span></li>
+          <li>1 wet towel inside a small container<span class="zh">一條濕毛巾放在小盒內</span></li>
+          <li>Drawstring bag (to hold the snack box and towel container)<span class="zh">索繩袋（放小食盒及毛巾盒）</span></li>
+          <li>Cardigan / Jacket (if needed)<span class="zh">外套（如需要）</span></li>
+        </ul>
+      </li>
+      <li>Items to keep at school (in his cubby) 留校物品（放在他的儲物格）:
+        <ul>
+          <li>A full set of spare clothes (including underwear and socks)<span class="zh">一套後備衣服（包括內衣及襪）</span></li>
+          <li>Diapers with tabs<span class="zh">有黏貼的尿片</span></li>
+          <li>Surgical masks in a Ziploc bag<span class="zh">外科口罩（放密實袋）</span></li>
+          <li>Check his bag — if teachers send dirty clothes home, wash them.<span class="zh">檢查書包，如老師把髒衣服放回，請清洗。</span></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="no">🚫 Do not pack any candy, sweets, toys, or medicine in the bag.<span class="zh">書包內不可放糖果、玩具或藥物。</span></div>
+  </div>
+
+  <div class="card">
+    <h2>🚶‍♂️ Drop-off &amp; Pick-up Rules <span class="zh">接送規則</span></h2>
+    <ul class="plain">
+      <li>Estate Entry: Use the registered Octopus Card at the Guard House to enter Vista Paradiso.<span class="zh">進入屋苑：在保安亭用已登記的八達通進入聽濤雅苑。</span></li>
+      <li>You <strong>MUST</strong> bring the physical pick-up card every day.<span class="zh">每天必須攜帶實體接送卡。</span>
+        <ul>
+          <li>Pictures of the card on your phone are <strong>NOT</strong> allowed.<span class="zh">不接受手機上的相片。</span></li>
+          <li>If you forget the card, you need to register with your HKID.<span class="zh">如忘記帶卡，須用香港身份證登記。</span></li>
+        </ul>
+      </li>
+      <li>Line up quietly. Do not call out Theo's name.<span class="zh">安靜排隊，不可叫 Theo 的名字。</span></li>
+      <li>Show the card to the teacher when it is your turn.<span class="zh">輪到你時向老師出示接送卡。</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🤒 Sickness Policy <span class="zh">病假安排</span></h2>
+    <ul class="plain">
+      <li>If Theo is sick or has a fever, do not send him to school.<span class="zh">如 Theo 生病或發燒，不可上學。</span></li>
+      <li>He must have <strong>no fever for 48 hours</strong> before he can go to school.<span class="zh">須退燒 48 小時後才可上學。</span></li>
+      <li>If he can't go to school, WhatsApp <a href="https://wa.me/85246211233" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600;">4621-1233</a> by <strong>8:00 AM</strong>.<span class="zh">如不能上學，早上 8 時前 WhatsApp 4621-1233 通知學校。</span></li>
+      <li>If he has a fever, tell the school his exact temperature and what kind of thermometer you used (e.g. ear, forehead).<span class="zh">如發燒，告知學校準確體溫及所用探熱器類型（如耳探、額探）。</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ TAB 4: PAYROLL (sheena.html) ============ -->
+<div id="tab-payroll" class="tab">
+  <div class="frame-bar"><a href="sheena.html" target="_blank" rel="noopener">Open in new tab ↗ 另開新頁</a></div>
+  <iframe id="payrollFrame" title="Payroll & Holiday" data-src="sheena.html"></iframe>
+</div>
+
+</main>
+
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else document.querySelectorAll('nav button')[['contact','rules','school','payroll'].indexOf(name)].classList.add('active');
+  if (name === 'payroll') {
+    const f = document.getElementById('payrollFrame');
+    if (!f.src) f.src = f.dataset.src;   // load only when first opened
+  }
+  history.replaceState(null, '', '#' + name);
+}
+function copyText(id, msg) {
+  const txt = document.getElementById(id).innerText.replace(/\n/g, ' ');
+  navigator.clipboard.writeText(txt).then(() => showMsg(msg)).catch(() => showMsg('Copy failed'));
+}
+function showMsg(msg) {
+  let bar = document.getElementById('msgBar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'msgBar';
+    bar.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:20px;font-size:0.9rem;z-index:99;transition:opacity .3s;max-width:90%;text-align:center;';
+    document.body.appendChild(bar);
+  }
+  bar.textContent = msg;
+  bar.style.opacity = '1';
+  clearTimeout(bar._t);
+  bar._t = setTimeout(() => bar.style.opacity = '0', 2600);
+}
+// Open tab from URL hash, e.g. index.html#school
+const h = location.hash.replace('#', '');
+if (['contact','rules','school','payroll'].includes(h)) showTab(h, null);
+</script>
+</body>
+</html>
