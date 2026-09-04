@@ -1,39 +1,48 @@
 name: Update school calendar
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '0 21 * * *'      # 21:00 UTC = 05:00 HKT, daily
-  workflow_dispatch:           # lets you run it manually from the Actions tab
+    - cron: "0 22 * * 0"   # ← 改返你原本嘅 cron（UTC）
 
 permissions:
   contents: write
+
+concurrency:
+  group: update-calendar
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install node-ical
-        run: npm init -y > /dev/null && npm install node-ical
-
       - name: Build calendar.json
-        env:
-          THEO_ICS_URL: ${{ secrets.THEO_ICS_URL }}
-        run: node scripts/build-calendar.mjs
+        run: node build-calendar.mjs   # ← 對返你 script 個名 / 有冇 npm install
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          cp calendar.json /tmp/calendar.json
+          git fetch origin main
+          git reset --hard origin/main
+          cp /tmp/calendar.json calendar.json
+
           git add calendar.json
           if git diff --cached --quiet; then
             echo "No changes"
-          else
-            git commit -m "chore: update school calendar"
-            git push
+            exit 0
           fi
+          git commit -m "chore: update school calendar"
+          git push origin main
