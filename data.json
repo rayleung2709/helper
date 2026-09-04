@@ -1,0 +1,1364 @@
+{
+  "settings": {
+    "employer": "Dr. LEUNG Tsz Hang Ray",
+    "helper": "Ms. CARIAGA Sheena Mae Zuniga",
+    "monthlySalary": 5100,
+    "contractStart": "2026-06-07",
+    "contractEnd": "2028-06-06",
+    "leavePer2Years": 14,
+    "leaveTaken": 0
+  },
+  "entries": [
+    {
+      "id": 1,
+      "date": "2024-06-08",
+      "item": "Octopus Card ($150 + $50 deposit)",
+      "category": "deduction",
+      "amount": 200
+    },
+    {
+      "id": 2,
+      "date": "2024-06-12",
+      "item": "Fare refund",
+      "category": "other",
+      "amount": 30.6
+    },
+    {
+      "id": 3,
+      "date": "2024-06-16",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 4,
+      "date": "2024-06-23",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 5,
+      "date": "2024-06-30",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 6,
+      "date": "2024-06-30",
+      "item": "Salary for June (24 days)",
+      "category": "salary",
+      "amount": 3840
+    },
+    {
+      "id": 7,
+      "date": "2024-07-07",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 8,
+      "date": "2024-07-21",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 9,
+      "date": "2024-07-28",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 10,
+      "date": "2024-07-31",
+      "item": "Salary for July",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 11,
+      "date": "2024-08-04",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 12,
+      "date": "2024-08-11",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 13,
+      "date": "2024-08-18",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 14,
+      "date": "2024-08-25",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 15,
+      "date": "2024-08-31",
+      "item": "Salary for August",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 16,
+      "date": "2024-09-01",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 17,
+      "date": "2024-09-08",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 18,
+      "date": "2024-09-18",
+      "item": "Mid-Autumn Festival Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 19,
+      "date": "2024-09-22",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 20,
+      "date": "2024-09-29",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 21,
+      "date": "2024-09-30",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 22,
+      "date": "2024-09-30",
+      "item": "Salary for September",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 23,
+      "date": "2024-10-01",
+      "item": "Chinese National Day Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 24,
+      "date": "2024-10-11",
+      "item": "Ancestor Day Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 25,
+      "date": "2024-10-13",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 26,
+      "date": "2024-10-20",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 27,
+      "date": "2024-10-27",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 28,
+      "date": "2024-10-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 29,
+      "date": "2024-10-31",
+      "item": "Salary for October",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 30,
+      "date": "2024-11-03",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 31,
+      "date": "2024-11-17",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 32,
+      "date": "2024-11-24",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 33,
+      "date": "2024-11-30",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 34,
+      "date": "2024-11-30",
+      "item": "Salary for November",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 35,
+      "date": "2024-12-08",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 36,
+      "date": "2024-12-12",
+      "item": "Condolence Money",
+      "category": "other",
+      "amount": 301
+    },
+    {
+      "id": 37,
+      "date": "2024-12-12",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 38,
+      "date": "2024-12-12",
+      "item": "Salary for December (paid early)",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 39,
+      "date": "2024-12-15",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 40,
+      "date": "2024-12-22",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 41,
+      "date": "2024-12-25",
+      "item": "Christmas Day Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 42,
+      "date": "2024-12-26",
+      "item": "Boxing Day Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 43,
+      "date": "2024-12-29",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 44,
+      "date": "2025-01-05",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 45,
+      "date": "2025-01-12",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 46,
+      "date": "2025-01-19",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 47,
+      "date": "2025-01-26",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 48,
+      "date": "2025-01-29",
+      "item": "Lunar New Year Bonus (3 days)",
+      "category": "sh",
+      "amount": 480
+    },
+    {
+      "id": 49,
+      "date": "2025-01-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 50,
+      "date": "2025-01-31",
+      "item": "Salary for January",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 51,
+      "date": "2025-02-09",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 52,
+      "date": "2025-02-23",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 53,
+      "date": "2025-02-28",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 54,
+      "date": "2025-02-28",
+      "item": "Salary for February",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 55,
+      "date": "2025-03-09",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 56,
+      "date": "2025-03-16",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 57,
+      "date": "2025-03-23",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 58,
+      "date": "2025-03-30",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 59,
+      "date": "2025-03-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 60,
+      "date": "2025-03-31",
+      "item": "Salary for March",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 61,
+      "date": "2025-04-04",
+      "item": "Ching Ming Holiday Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 62,
+      "date": "2025-04-06",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 63,
+      "date": "2025-04-18",
+      "item": "Easter Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 64,
+      "date": "2025-04-19",
+      "item": "Easter Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 65,
+      "date": "2025-04-20",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 66,
+      "date": "2025-04-21",
+      "item": "Easter Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 67,
+      "date": "2025-04-27",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 68,
+      "date": "2025-04-30",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 69,
+      "date": "2025-04-30",
+      "item": "Salary for April",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 70,
+      "date": "2025-04-30",
+      "item": "Salary for May (Advanced)",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 71,
+      "date": "2025-05-01",
+      "item": "Salary Advanced (May salary paid in April)",
+      "category": "advance",
+      "amount": 4870
+    },
+    {
+      "id": 72,
+      "date": "2025-05-04",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 73,
+      "date": "2025-05-05",
+      "item": "Buddha's Birthday Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 74,
+      "date": "2025-05-11",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 75,
+      "date": "2025-05-18",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 76,
+      "date": "2025-05-25",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 77,
+      "date": "2025-05-31",
+      "item": "Dragon Boat Holiday Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 78,
+      "date": "2025-05-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 79,
+      "date": "2025-05-31",
+      "item": "Salary for May",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 80,
+      "date": "2025-06-01",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 81,
+      "date": "2025-06-02",
+      "item": "Salary for June (paid early 2.6.2025)",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 82,
+      "date": "2025-06-05",
+      "item": "Sanitary Pads",
+      "category": "deduction",
+      "amount": 17.6
+    },
+    {
+      "id": 83,
+      "date": "2025-06-08",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 84,
+      "date": "2025-06-22",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 85,
+      "date": "2025-06-29",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 86,
+      "date": "2025-06-30",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 87,
+      "date": "2025-07-01",
+      "item": "HKSAR Day Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 88,
+      "date": "2025-07-06",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 89,
+      "date": "2025-07-13",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 90,
+      "date": "2025-07-20",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 91,
+      "date": "2025-07-23",
+      "item": "Salary for July (paid early)",
+      "category": "salary",
+      "amount": 1000
+    },
+    {
+      "id": 92,
+      "date": "2025-07-27",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 93,
+      "date": "2025-07-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 94,
+      "date": "2025-07-31",
+      "item": "Salary for July (remainder)",
+      "category": "salary",
+      "amount": 3870
+    },
+    {
+      "id": 95,
+      "date": "2025-08-03",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 96,
+      "date": "2025-08-10",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 97,
+      "date": "2025-08-17",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 98,
+      "date": "2025-08-24",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 99,
+      "date": "2025-08-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 100,
+      "date": "2025-08-31",
+      "item": "Salary for August",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 101,
+      "date": "2025-09-07",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 102,
+      "date": "2025-09-21",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 103,
+      "date": "2025-09-28",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 104,
+      "date": "2025-09-30",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 105,
+      "date": "2025-09-30",
+      "item": "Salary for September",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 106,
+      "date": "2025-10-01",
+      "item": "China National Day Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 107,
+      "date": "2025-10-05",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 108,
+      "date": "2025-10-07",
+      "item": "Mid-Autumn Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 109,
+      "date": "2025-10-12",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 110,
+      "date": "2025-10-19",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 111,
+      "date": "2025-10-26",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 112,
+      "date": "2025-10-29",
+      "item": "Chung Yeung (Ancestor's Day) Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 113,
+      "date": "2025-10-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 114,
+      "date": "2025-10-31",
+      "item": "Salary for October",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 115,
+      "date": "2025-11-02",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 116,
+      "date": "2025-11-09",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 117,
+      "date": "2025-11-16",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 118,
+      "date": "2025-11-23",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 119,
+      "date": "2025-11-30",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 120,
+      "date": "2025-11-30",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 121,
+      "date": "2025-11-30",
+      "item": "Salary for November",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 122,
+      "date": "2025-11-30",
+      "item": "Salary for December (Advanced)",
+      "category": "salary",
+      "amount": 1000
+    },
+    {
+      "id": 123,
+      "date": "2025-12-01",
+      "item": "Salary Advanced (paid 30.11.2025)",
+      "category": "advance",
+      "amount": 1000
+    },
+    {
+      "id": 124,
+      "date": "2025-12-07",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 125,
+      "date": "2025-12-14",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 126,
+      "date": "2025-12-21",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 127,
+      "date": "2025-12-26",
+      "item": "Boxing Day Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 128,
+      "date": "2025-12-28",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 129,
+      "date": "2025-12-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 130,
+      "date": "2025-12-31",
+      "item": "Salary for December",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 131,
+      "date": "2026-01-01",
+      "item": "New Year Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 132,
+      "date": "2026-01-04",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 133,
+      "date": "2026-01-11",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 134,
+      "date": "2026-01-18",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 135,
+      "date": "2026-01-24",
+      "item": "Salary for January (paid early)",
+      "category": "salary",
+      "amount": 1000
+    },
+    {
+      "id": 136,
+      "date": "2026-01-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 137,
+      "date": "2026-01-31",
+      "item": "Salary for January (remainder)",
+      "category": "salary",
+      "amount": 3870
+    },
+    {
+      "id": 138,
+      "date": "2026-01-31",
+      "item": "Salary for February (Advanced)",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 139,
+      "date": "2026-02-01",
+      "item": "Salary Advanced (Feb salary paid 31.1.2026)",
+      "category": "advance",
+      "amount": 4870
+    },
+    {
+      "id": 140,
+      "date": "2026-02-02",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 141,
+      "date": "2026-02-09",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 142,
+      "date": "2026-02-16",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 143,
+      "date": "2026-02-17",
+      "item": "Lunar New Year Bonus (3 days)",
+      "category": "sh",
+      "amount": 480
+    },
+    {
+      "id": 144,
+      "date": "2026-02-23",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 145,
+      "date": "2026-02-28",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 146,
+      "date": "2026-02-28",
+      "item": "Salary for February",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 147,
+      "date": "2026-03-01",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 148,
+      "date": "2026-03-15",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 149,
+      "date": "2026-03-22",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 150,
+      "date": "2026-03-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 151,
+      "date": "2026-03-31",
+      "item": "Salary for March",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 152,
+      "date": "2026-03-31",
+      "item": "Salary for April (Advanced)",
+      "category": "salary",
+      "amount": 2000
+    },
+    {
+      "id": 153,
+      "date": "2026-04-01",
+      "item": "Salary Advanced (paid 31.3.2026)",
+      "category": "advance",
+      "amount": 2000
+    },
+    {
+      "id": 154,
+      "date": "2026-04-03",
+      "item": "Easter Bonus (3 days)",
+      "category": "sh",
+      "amount": 480
+    },
+    {
+      "id": 155,
+      "date": "2026-04-05",
+      "item": "Ching Ming Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 156,
+      "date": "2026-04-12",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 157,
+      "date": "2026-04-19",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 158,
+      "date": "2026-04-26",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 159,
+      "date": "2026-04-30",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 160,
+      "date": "2026-04-30",
+      "item": "Salary for April",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 161,
+      "date": "2026-04-30",
+      "item": "Salary for May (Advanced)",
+      "category": "salary",
+      "amount": 2500
+    },
+    {
+      "id": 162,
+      "date": "2026-05-01",
+      "item": "Salary Advanced (paid 30.4.2026)",
+      "category": "advance",
+      "amount": 2500
+    },
+    {
+      "id": 163,
+      "date": "2026-05-01",
+      "item": "Labour Day Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 164,
+      "date": "2026-05-03",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 165,
+      "date": "2026-05-10",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 166,
+      "date": "2026-05-17",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 167,
+      "date": "2026-05-24",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 168,
+      "date": "2026-05-25",
+      "item": "Buddha's Birthday Bonus",
+      "category": "sh",
+      "amount": 160
+    },
+    {
+      "id": 169,
+      "date": "2026-05-31",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 160
+    },
+    {
+      "id": 170,
+      "date": "2026-05-31",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 171,
+      "date": "2026-05-31",
+      "item": "Salary for May",
+      "category": "salary",
+      "amount": 4870
+    },
+    {
+      "id": 172,
+      "date": "2026-06-06",
+      "item": "Extra Bonus",
+      "category": "bonus",
+      "amount": 120
+    },
+    {
+      "id": 173,
+      "date": "2026-06-06",
+      "item": "Days in lieu of annual leave",
+      "category": "other",
+      "amount": 320
+    },
+    {
+      "id": 174,
+      "date": "2026-06-06",
+      "item": "Salary for June (6 days, old contract)",
+      "category": "salary",
+      "amount": 960
+    },
+    {
+      "id": 175,
+      "date": "2026-06-07",
+      "item": "Salary for June (24 days, new contract)",
+      "category": "salary",
+      "amount": 4021.4
+    },
+    {
+      "id": 176,
+      "date": "2026-06-07",
+      "item": "Salary Advanced (June salary paid 7.6.2026)",
+      "category": "advance",
+      "amount": 4021.4
+    },
+    {
+      "id": 177,
+      "date": "2026-06-19",
+      "item": "Dragon Boat Festival Bonus",
+      "category": "sh",
+      "amount": 168
+    },
+    {
+      "id": 178,
+      "date": "2026-06-21",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 179,
+      "date": "2026-06-28",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 180,
+      "date": "2026-07-01",
+      "item": "HKSAR Day Bonus",
+      "category": "sh",
+      "amount": 168
+    },
+    {
+      "id": 181,
+      "date": "2026-07-05",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 182,
+      "date": "2026-07-12",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 183,
+      "date": "2026-07-19",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 184,
+      "date": "2026-07-22",
+      "item": "Salary Advanced",
+      "category": "advance",
+      "amount": 500
+    },
+    {
+      "id": 185,
+      "date": "2026-07-26",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 186,
+      "date": "2026-07-31",
+      "item": "Salary for July",
+      "category": "salary",
+      "amount": 5100
+    },
+    {
+      "id": 187,
+      "date": "2026-08-01",
+      "item": "Salary Advanced (paid 22.7.2026)",
+      "category": "advance",
+      "amount": 2000
+    },
+    {
+      "id": 188,
+      "date": "2026-08-02",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 189,
+      "date": "2026-08-09",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 190,
+      "date": "2026-08-23",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 191,
+      "date": "2026-08-30",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 192,
+      "date": "2026-08-31",
+      "item": "Salary for August",
+      "category": "salary",
+      "amount": 5100
+    },
+    {
+      "id": 193,
+      "date": "2026-08-31",
+      "item": "Salary for September (Advanced)",
+      "category": "salary",
+      "amount": 5100
+    }
+  ]
+}
