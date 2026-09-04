@@ -456,6 +456,17 @@ async function loadCalendar(force) {
     const r = await fetch('calendar.json?t=' + Date.now(), { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     calData = await r.json();
+    // 兼容舊 script 嘅格式：updated/summary/純日期 + 包含式 end
+    calData.generated = calData.generated || calData.updated;
+    calData.events = (calData.events || []).map(ev => {
+      const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(ev.start);
+      return {
+        ...ev,
+        title:  ev.title || ev.summary || '(No title)',
+        allDay: ev.allDay ?? dateOnly,
+        end:    dateOnly ? addDays(ev.end || ev.start, 1) : ev.end   // 包含 → 唔包含
+      };
+    });
     upd.textContent = 'Updated: ' + new Date(calData.generated).toLocaleString('en-GB', { timeZone: HK, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
     renderCalendar();
   } catch (e) {
