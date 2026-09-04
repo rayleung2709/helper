@@ -1,59 +1,48 @@
-// Fetches the secret ICS feed and writes calendar.json (runs inside GitHub Actions only)
-import ical from 'node-ical';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+// build-calendar.mjs — fetch school ICS → calendar.json (no dependencies)
+import { writeFileSync } from 'node:fs';
+const ICS_URL = process.env.ICS_URL || 'https://calendar.google.com/calendar/ical/theodoreleung0810%40gmail.com/private-63581cf270d64d174837e157b3cbf312/basic.ics'; // ← 改呢行
 
-const url = process.env.THEO_ICS_URL;
-if (!url) { console.error('Missing THEO_ICS_URL secret'); process.exit(1); }
+const res = await fetch(ICS_URL);
+if (!res.ok) throw new Error(`ICS fetch failed: HTTP ${res.status}`);
+const text = await res.text();
 
-const now = new Date();
-const rangeStart = new Date(now.getFullYear(), now.getMonth() - 2, 1);   // 2 months back
-const rangeEnd   = new Date(now.getFullYear(), now.getMonth() + 13, 0);  // 12 months ahead
+// RFC 5545: 長行會用「換行 + 空格」摺行，先駁返做一行
+const lines = text.replace(/\r?\n[ \t]/g, '').split(/\r?\n/);
 
-const pad = n => String(n).padStart(2, '0');
-const localYmd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-const dayKey = d => d.toISOString().slice(0, 10);          // key format node-ical uses for exdate/recurrences
-const str = v => ((v && typeof v === 'object') ? v.val : v) || '';
-
-const data = await ical.async.fromURL(url);
-const out = [];
-
-function add(ev, start) {
-  const allDay = ev.datetype === 'date';
-  let end = ev.end ? new Date(start.getTime() + (ev.end - ev.start)) : null;
-  if (!end || end <= start) end = allDay ? new Date(start.getTime() + 86400000) : start;
-  if (end < rangeStart || start > rangeEnd) return;
-  out.push({
-    id: `${ev.uid}_${start.toISOString()}`,
-    title: str(ev.summary).trim() || '(No title)',
-    start: allDay ? localYmd(start) : start.toISOString(),
-    end:   allDay ? localYmd(end)   : end.toISOString(),   // all-day end is exclusive (next day)
-    allDay,
-    location: str(ev.location).trim(),
-    description: str(ev.description).trim(),
-  });
+const events = [];
+let cur = null;
+for (const line of lines) {
+  if (line === 'BEGIN:VEVENT') { cur = {}; continue; }
+  if (line === 'END:VEVENT')   { if (cur) events.push(cur); cur = null; continue; }
+  if (!cur) continue;
+  const i = line.indexOf(':');
+  if (i < 0) continue;
+  const name  = line.slice(0, i).split(';')[0];
+  const value = line.slice(i + 1);
+  if (name === 'SUMMARY') cur.summary = value.replace(/\\,/g, ',').replace(/\\n/g, ' ').trim();
+  if (name === 'DTSTART') cur.start = toDate(value);
+  if (name === 'DTEND')   { cur.end = toDate(value); cur.endAllDay = !value.includes('T'); }
 }
 
-for (const ev of Object.values(data)) {
-  if (ev.type !== 'VEVENT' || ev.status === 'CANCELLED') continue;
-  if (ev.rrule) {
-    for (const d of ev.rrule.between(rangeStart, rangeEnd, true)) {
-      const k = dayKey(d);
-      if (ev.exdate?.[k]) continue;        // deleted occurrence
-      if (ev.recurrences?.[k]) continue;   // edited occurrence – added below
-      add(ev, d);
-    }
-    for (const r of Object.values(ev.recurrences || {})) add(r, r.start);
-  } else {
-    add(ev, ev.start);
-  }
+function toDate(v) {
+  const m = v.match(/^(\d{4})(\d{2})(\d{2})/);
+  return m ? `${m[1]}-${m[2]}-${m[3]}` : '';
+}
+function shiftDay(d, n) {
+  const t = new Date(d + 'T00:00:00Z');
+  t.setUTCDate(t.getUTCDate() + n);
+  return t.toISOString().slice(0, 10);
 }
 
-out.sort((a, b) => a.start.localeCompare(b.start));
+const out = events
+  .filter(e => e.start && e.summary)
+  .map(e => {
+    let end = e.end || e.start;
+    if (e.end && e.endAllDay) end = shiftDay(e.end, -1);   // 全日 event 嘅 DTEND 係「排除式」
+    if (end < e.start) end = e.start;
+    return { start: e.start, end, summary: e.summary };
+  })
+  .sort((a, b) => a.start.localeCompare(b.start));
 
-if (existsSync('calendar.json')) {
-  const prev = JSON.parse(readFileSync('calendar.json', 'utf8'));
-  if (JSON.stringify(prev.events) === JSON.stringify(out)) { console.log('No changes'); process.exit(0); }
-}
-
-writeFileSync('calendar.json', JSON.stringify({ generated: now.toISOString(), count: out.length, events: out }, null, 1));
-console.log(`Wrote ${out.length} events`);
+writeFileSync('calendar.json', JSON.stringify({ updated: new Date().toISOString(), events: out }, null, 2));
+console.log(`Wrote ${out.length} events to calendar.json`);
