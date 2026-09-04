@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sheena's Payroll and Holiday</title>
+<title>Helper Payroll & Holiday Tracker</title>
 <style>
   :root {
     --primary: #0f766e;
@@ -68,39 +68,57 @@
   .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
   .btn-outline:hover { background: var(--primary-light); }
   .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+
+  /* Tables */
   table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-  th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--border); }
+  th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
   th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; }
   td.amount, th.amount { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.item { word-break: break-word; }
+  td.item .sub { display: none; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  /* Month block */
   .month-block { margin-bottom: 20px; }
   .month-header {
     display: flex; justify-content: space-between; align-items: center;
     background: var(--primary-light); padding: 10px 12px; border-radius: 8px; margin-bottom: 6px;
-    flex-wrap: wrap; gap: 6px;
+    flex-wrap: wrap; gap: 6px 12px;
   }
   .month-header h3 { font-size: 1rem; color: var(--primary-dark); }
-  .month-summary { font-size: 0.85rem; text-align: right; }
+  .month-summary { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.85rem; color: var(--muted); }
+  .month-summary span { white-space: nowrap; }
+  .month-summary b { color: var(--text); font-weight: 600; }
   .month-summary strong { color: var(--primary-dark); font-size: 1rem; }
   .neg { color: var(--danger); }
   .badge {
     display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
-    background: var(--primary-light); color: var(--primary-dark); margin-left: 4px;
+    background: var(--primary-light); color: var(--primary-dark); margin-left: 4px; white-space: nowrap;
   }
   .badge.adv { background: #fef3c7; color: #92400e; }
   .badge.ded { background: #fee2e2; color: #991b1b; }
+
+  /* Stats */
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-  .stat {
-    background: var(--primary-light); border-radius: 10px; padding: 12px; text-align: center;
+  .stat { background: var(--primary-light); border-radius: 10px; padding: 12px; text-align: center; }
+  .stat .num {
+    font-size: clamp(1.15rem, 5vw, 1.5rem); font-weight: 700; color: var(--primary-dark);
+    font-variant-numeric: tabular-nums;
   }
-  .stat .num { font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); }
+  .stat .num small { font-size: 0.65em; font-weight: 600; margin-right: 1px; }
   .stat .lbl { font-size: 0.75rem; color: var(--muted); }
+  .year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+
   .tab { display: none; }
   .tab.active { display: block; }
   .empty { text-align: center; color: var(--muted); padding: 30px; font-size: 0.9rem; }
   .hint { font-size: 0.78rem; color: var(--muted); margin-top: -8px; margin-bottom: 12px; }
-  .year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
 
-  /* Receipt styles */
+  /* Currency toggle */
+  .cur-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .cur-wrap h2 { margin-bottom: 0; }
+  .rate-note { font-size: 0.72rem; color: var(--muted); margin-left: 6px; }
+
+  /* Receipt */
   #receiptArea {
     background: white; border: 1px solid var(--border); border-radius: 8px;
     padding: 28px; max-width: 700px; margin: 0 auto; font-size: 0.92rem;
@@ -116,15 +134,6 @@
   .sig-line { border-top: 1.5px solid var(--text); padding-top: 6px; font-size: 0.82rem; }
   .ack { margin-top: 24px; font-size: 0.85rem; font-style: italic; }
 
-  /* Currency toggle */
-  .cur-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  .cur-wrap h2 { margin-bottom: 0; }
-  .rate-note { font-size: 0.72rem; color: var(--muted); margin-left: 6px; }
-  /* School calendar */
-  .event { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-  .event:last-child { border-bottom: none; }
-  .event .d { min-width: 105px; color: var(--primary-dark); font-weight: 600; white-space: nowrap; }
-  .event.past { opacity: 0.45; }
   footer { text-align: center; font-size: 0.72rem; color: var(--muted); padding: 16px; }
   footer a { color: inherit; }
 
@@ -136,16 +145,25 @@
       border: none; padding: 10mm; box-shadow: none;
     }
   }
+
+  /* Mobile */
   @media (max-width: 600px) {
     main { padding: 10px; }
-    th, td { padding: 6px 4px; font-size: 0.82rem; }
+    .card { padding: 14px 12px; }
+    th, td { padding: 8px 4px; font-size: 0.85rem; }
+    .col-date { display: none; }            /* Date 欄收埋，改顯示喺 Item 下面 */
+    td.item .sub { display: block; }
+    .month-header { flex-direction: column; align-items: flex-start; }
+    .month-summary { width: 100%; justify-content: space-between; gap: 4px 8px; }
+    .rate-note { display: block; margin-left: 0; text-align: right; }
+    #receiptArea { padding: 16px 14px; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🏠 Sheena's Payroll System</h1>
+  <h1>🏠 Helper Payroll System</h1>
   <p>Salary and Holiday all-in-one</p>
 </header>
 
@@ -210,8 +228,6 @@
   </div>
 </div>
 
-
-
 </main>
 
 <script>
@@ -259,9 +275,11 @@ async function loadData() {
   bar.className = ''; bar.textContent = 'Loading data…';
   try {
     state = await fetchRemote();
-    const t = (state.meta && state.meta.lastModified) ? new Date(state.meta.lastModified).toLocaleString('en-HK') : '—';
+    const t = (state.meta && state.meta.lastModified)
+      ? new Date(state.meta.lastModified).toLocaleString('en-HK', { dateStyle: 'medium', timeStyle: 'short' })
+      : null;
     bar.className = 'synced';
-    bar.innerHTML = '✅ Updated completed <a onclick="loadData()">↻ Refresh</a>';
+    bar.innerHTML = `✅ Up to date${t ? ' · ' + t : ''} <a onclick="loadData()">↻ Refresh</a>`;
     renderAll();
   } catch(e) {
     bar.className = 'err';
@@ -308,7 +326,12 @@ function updateCurrencyUI() {
     `1 HKD ≈ ${rates[currency].toFixed(3)} ${currency}${ratesLive ? '' : ' (offline rate)'}`;
 }
 function sym() { return SYMBOL[currency]; }
-function fmtC(n) { return fmt(n * rates[currency]); }   // converted for display
+function fmtC(n)  { return fmt(n * rates[currency]); }                                   // converted, 2 dp
+function fmtC0(n) { return Math.round(n * rates[currency]).toLocaleString('en-HK'); }   // converted, no decimals (yearly)
+function shortD(d) {                                                                    // '2026-07-01' → 'Wed, 1 Jul'
+  const [y, m, dd] = d.split('-').map(Number);
+  return new Date(y, m - 1, dd).toLocaleDateString('en-HK', { weekday: 'short', day: 'numeric', month: 'short' });
+}
 
 function monthKey(d) { return d.slice(0,7); }
 function monthName(key) {
@@ -316,7 +339,7 @@ function monthName(key) {
   const names = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   return names[parseInt(m)-1] + ' ' + y;
 }
-function todayStr() { return new Date().toISOString().slice(0,10); }
+function todayStr() { return new Date().toLocaleDateString('en-CA'); }   // YYYY-MM-DD in local time (not UTC)
 
 // ================= TABS =================
 function showTab(name, btn) {
@@ -358,7 +381,7 @@ function renderYearSummary() {
   const keys = Object.keys(years).sort().reverse();
   if (!keys.length) { el.innerHTML = '<div class="empty">No data yet</div>'; return; }
   el.innerHTML = keys.map(y =>
-    `<div class="stat"><div class="num">${sym()}${fmtC(years[y])}</div><div class="lbl">${y} Total Paid</div></div>`).join('');
+    `<div class="stat"><div class="num"><small>${sym()}</small>${fmtC0(years[y])}</div><div class="lbl">${y} Total Paid</div></div>`).join('');
 }
 function renderEntries() {
   renderYearSummary();
@@ -374,19 +397,19 @@ function renderEntries() {
       <div class="month-header">
         <h3>${monthName(k)}</h3>
         <div class="month-summary">
-          Earned: ${sym()}${fmtC(t.earned)}
-          ${t.advance ? ` &nbsp;|&nbsp; Advance: <span class="neg">−${sym()}${fmtC(t.advance)}</span>` : ''}
-          &nbsp;|&nbsp; Net: <strong>${sym()}${fmtC(t.payable)}</strong>
+          <span>Earned <b>${sym()}${fmtC(t.earned)}</b></span>
+          ${t.advance ? `<span>Advance <b class="neg">−${sym()}${fmtC(t.advance)}</b></span>` : ''}
+          <span>Net <strong>${sym()}${fmtC(t.payable)}</strong></span>
         </div>
       </div>
-      <table><thead><tr><th>Date</th><th>Item</th><th class="amount">Amount (${currency})</th></tr></thead><tbody>`;
+      <table><thead><tr><th class="col-date">Date</th><th>Item</th><th class="amount">${currency}</th></tr></thead><tbody>`;
     entries.forEach(e => {
-      const isNeg = e.category === 'advance' || e.category === 'deduction' || e.amount < 0;
+      const neg = e.category === 'advance' || e.category === 'deduction' || e.amount < 0;
       const badgeClass = e.category === 'advance' ? 'adv' : (e.category === 'deduction' ? 'ded' : '');
       html += `<tr>
-        <td>${e.date}</td>
-        <td>${e.item}<span class="badge ${badgeClass}">${CAT_LABEL[e.category] || e.category}</span></td>
-        <td class="amount ${isNeg ? 'neg' : ''}">${e.category==='advance'||e.category==='deduction' ? '−' : ''}${fmtC(Math.abs(e.amount))}</td>
+        <td class="col-date">${e.date}</td>
+        <td class="item">${e.item}<span class="badge ${badgeClass}">${CAT_LABEL[e.category] || e.category}</span><div class="sub">${shortD(e.date)}</div></td>
+        <td class="amount ${neg ? 'neg' : ''}">${neg ? '−' : ''}${fmtC(Math.abs(e.amount))}</td>
       </tr>`;
     });
     html += '</tbody></table></div>';
@@ -415,7 +438,7 @@ function renderReceipt() {
     rows += `<tr><td>${e.date}</td><td>${e.item}</td><td class="amount">${neg?'−':''}${fmt(Math.abs(e.amount))}</td></tr>`;
   });
   const advances = entries.filter(e => e.category === 'advance');
-  let advRows = advances.map(e =>
+  const advRows = advances.map(e =>
     `<tr><td>${e.date}</td><td>Less: ${e.item}</td><td class="amount neg">−${fmt(e.amount)}</td></tr>`).join('');
 
   area.innerHTML = `
@@ -467,38 +490,6 @@ function renderLeave() {
     `<tr style="${d < today0 ? 'opacity:0.45;' : ''}"><td>${d}${d < today0 ? ' ✔' : ''}</td><td>${n}</td></tr>`).join('');
 }
 
-// ================= SCHOOL CALENDAR =================
-let calendarEvents = null;
-async function loadCalendar() {
-  const el = document.getElementById('calendarList');
-  try {
-    const res = await fetch('calendar.json?t=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const j = await res.json();
-    const list = Array.isArray(j) ? j : (j.events || j.items || []);
-    calendarEvents = list.map(ev => ({
-      date:  String(ev.start || ev.date || ev.dtstart || '').slice(0,10),
-      end:   String(ev.end || ev.dtend || '').slice(0,10),
-      title: ev.title || ev.summary || ev.name || ''
-    })).filter(ev => ev.date).sort((a,b) => a.date.localeCompare(b.date));
-    renderCalendar();
-  } catch (e) {
-    calendarEvents = [];
-    el.innerHTML = `<div class="empty">calendar.json not available (${e.message})</div>`;
-  }
-}
-function renderCalendar() {
-  if (!calendarEvents) return;
-  const showPast = document.getElementById('showPast').checked;
-  const today = todayStr();
-  const list = calendarEvents.filter(ev => showPast || (ev.end || ev.date) >= today);
-  document.getElementById('calendarList').innerHTML = list.length
-    ? list.map(ev => `<div class="event ${(ev.end || ev.date) < today ? 'past' : ''}">
-        <div class="d">${ev.date}${ev.end && ev.end !== ev.date ? ' → ' + ev.end : ''}</div>
-        <div>${ev.title}</div></div>`).join('')
-    : '<div class="empty">No upcoming events</div>';
-}
-
 // ================= RENDER ALL / INIT =================
 function renderAll() {
   renderEntries();
@@ -512,7 +503,6 @@ document.addEventListener('visibilitychange', () => {
 updateCurrencyUI();
 loadData();
 loadRates();
-loadCalendar();
 </script>
 </body>
 </html>
