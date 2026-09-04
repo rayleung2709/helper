@@ -1,0 +1,260 @@
+{
+  "updated": "2026-09-04T09:09:00.256Z",
+  "events": [
+    {
+      "start": "2026-08-03",
+      "end": "2026-08-03",
+      "summary": "Teacher Induction (No School)"
+    },
+    {
+      "start": "2026-08-10",
+      "end": "2026-08-14",
+      "summary": "Teacher Orientation & Training (No School)"
+    },
+    {
+      "start": "2026-08-15",
+      "end": "2026-08-15",
+      "summary": "Parents' Induction (Online)"
+    },
+    {
+      "start": "2026-08-17",
+      "end": "2026-08-17",
+      "summary": "First Day of School / Term 1 Starts"
+    },
+    {
+      "start": "2026-09-04",
+      "end": "2026-09-04",
+      "summary": "Cross Campus Experience"
+    },
+    {
+      "start": "2026-09-11",
+      "end": "2026-09-11",
+      "summary": "Professional Development Day (No School)"
+    },
+    {
+      "start": "2026-09-12",
+      "end": "2026-09-12",
+      "summary": "MOS Open Day"
+    },
+    {
+      "start": "2026-09-25",
+      "end": "2026-09-25",
+      "summary": "Lantern Party"
+    },
+    {
+      "start": "2026-09-26",
+      "end": "2026-09-26",
+      "summary": "Day after Mid-Autumn Festival (Public Holiday)"
+    },
+    {
+      "start": "2026-09-30",
+      "end": "2026-09-30",
+      "summary": "Birthday Party (Aug & Sep)"
+    },
+    {
+      "start": "2026-10-01",
+      "end": "2026-10-01",
+      "summary": "National Day (Public Holiday)"
+    },
+    {
+      "start": "2026-10-02",
+      "end": "2026-10-02",
+      "summary": "MOS Interview Day (No School)"
+    },
+    {
+      "start": "2026-10-09",
+      "end": "2026-10-09",
+      "summary": "Vaccination Day"
+    },
+    {
+      "start": "2026-10-12",
+      "end": "2026-10-15",
+      "summary": "Mid-Term Break (No School)"
+    },
+    {
+      "start": "2026-10-19",
+      "end": "2026-10-19",
+      "summary": "Chung Yeung Festival (Public Holiday)"
+    },
+    {
+      "start": "2026-10-23",
+      "end": "2026-10-23",
+      "summary": "Birthday Party (Oct)"
+    },
+    {
+      "start": "2026-10-30",
+      "end": "2026-10-30",
+      "summary": "Character Day"
+    },
+    {
+      "start": "2026-11-06",
+      "end": "2026-11-06",
+      "summary": "Family Outing (TBC)"
+    },
+    {
+      "start": "2026-11-25",
+      "end": "2026-11-25",
+      "summary": "Birthday Party (Nov)"
+    },
+    {
+      "start": "2026-11-26",
+      "end": "2026-11-27",
+      "summary": "Parent/Teacher Consultation Day (No School)"
+    },
+    {
+      "start": "2026-12-01",
+      "end": "2026-12-01",
+      "summary": "Term 2 Starts"
+    },
+    {
+      "start": "2026-12-11",
+      "end": "2026-12-11",
+      "summary": "Birthday Party (Dec)"
+    },
+    {
+      "start": "2026-12-16",
+      "end": "2026-12-17",
+      "summary": "Concert Day"
+    },
+    {
+      "start": "2026-12-18",
+      "end": "2026-12-18",
+      "summary": "Christmas Party"
+    },
+    {
+      "start": "2026-12-21",
+      "end": "2027-01-01",
+      "summary": "Christmas Holiday (No School)"
+    },
+    {
+      "start": "2027-01-01",
+      "end": "2027-01-01",
+      "summary": "New Year Day (Public Holiday)"
+    },
+    {
+      "start": "2027-01-04",
+      "end": "2027-01-04",
+      "summary": "Professional Development Day (No School)"
+    },
+    {
+      "start": "2027-01-29",
+      "end": "2027-01-29",
+      "summary": "Birthday Party (Jan)"
+    },
+    {
+      "start": "2027-02-03",
+      "end": "2027-02-03",
+      "summary": "CNY Flower Market"
+    },
+    {
+      "start": "2027-02-04",
+      "end": "2027-02-13",
+      "summary": "Chinese New Year Holiday (No School)"
+    },
+    {
+      "start": "2027-02-26",
+      "end": "2027-02-26",
+      "summary": "Birthday Party (Feb)"
+    },
+    {
+      "start": "2027-03-19",
+      "end": "2027-03-19",
+      "summary": "Sports Day (TBC)"
+    },
+    {
+      "start": "2027-03-24",
+      "end": "2027-03-24",
+      "summary": "Birthday Party (Mar) / Easter Party"
+    },
+    {
+      "start": "2027-03-25",
+      "end": "2027-04-02",
+      "summary": "Easter Holiday (No School)"
+    },
+    {
+      "start": "2027-04-05",
+      "end": "2027-04-05",
+      "summary": "Ching Ming Festival (Public Holiday)"
+    },
+    {
+      "start": "2027-04-06",
+      "end": "2027-04-06",
+      "summary": "Term 3 Starts"
+    },
+    {
+      "start": "2027-04-23",
+      "end": "2027-04-23",
+      "summary": "Professional Development Day (No School)"
+    },
+    {
+      "start": "2027-04-24",
+      "end": "2027-04-24",
+      "summary": "MOS Open Day"
+    },
+    {
+      "start": "2027-04-30",
+      "end": "2027-04-30",
+      "summary": "Birthday Party (Apr)"
+    },
+    {
+      "start": "2027-05-01",
+      "end": "2027-05-01",
+      "summary": "Labour Day (Public Holiday)"
+    },
+    {
+      "start": "2027-05-13",
+      "end": "2027-05-13",
+      "summary": "Buddha's Birthday (Public Holiday)"
+    },
+    {
+      "start": "2027-05-26",
+      "end": "2027-05-26",
+      "summary": "Birthday Party (May)"
+    },
+    {
+      "start": "2027-05-27",
+      "end": "2027-05-28",
+      "summary": "Parents/Teacher Consultation Day (No School)"
+    },
+    {
+      "start": "2027-06-09",
+      "end": "2027-06-09",
+      "summary": "Dragon Boat Festival (Public Holiday)"
+    },
+    {
+      "start": "2027-06-17",
+      "end": "2027-06-17",
+      "summary": "Year End Graduation Ceremony (TBC)"
+    },
+    {
+      "start": "2027-06-18",
+      "end": "2027-06-18",
+      "summary": "Day after Graduation Ceremony (No School)"
+    },
+    {
+      "start": "2027-06-25",
+      "end": "2027-06-25",
+      "summary": "Last School Day / Birthday Party (Jun & Jul)"
+    },
+    {
+      "start": "2027-06-28",
+      "end": "2027-06-30",
+      "summary": "Inventory Day (No School)"
+    },
+    {
+      "start": "2027-06-30",
+      "end": "2027-06-30",
+      "summary": "Summer Holiday Starts"
+    },
+    {
+      "start": "2027-07-01",
+      "end": "2027-07-01",
+      "summary": "HKSAR Establishment Day (Public Holiday)"
+    },
+    {
+      "start": "2027-07-02",
+      "end": "2027-07-30",
+      "summary": "Summer Holidays"
+    }
+  ]
+}
