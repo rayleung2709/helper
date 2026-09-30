@@ -1354,14 +1354,63 @@
       "amount": 5100
     },
     {
-      "id": 1788529326896,
-      "date": "2026-09-04",
-      "item": "Salary Advanced (paid with August)",
+      "id": 1790786560148,
+      "date": "2026-09-30",
+      "item": "Salary for September",
+      "category": "salary",
+      "amount": 5100
+    },
+    {
+      "id": 1790786572545,
+      "date": "2026-09-30",
+      "item": "Salary for October (Partially Advanced)",
+      "category": "salary",
+      "amount": 3000
+    },
+    {
+      "id": 1790786628264,
+      "date": "2026-09-01",
+      "item": "Salary Advanced for September (paid on 31.8.2026)",
       "category": "advance",
       "amount": 5100
+    },
+    {
+      "id": 1790786660344,
+      "date": "2026-09-17",
+      "item": "Magnet from Singapore",
+      "category": "deduction",
+      "amount": 168
+    },
+    {
+      "id": 1790786725926,
+      "date": "2026-09-06",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 1790786745823,
+      "date": "2026-09-13",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 1790786764535,
+      "date": "2026-09-20",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 1790786785484,
+      "date": "2026-09-26",
+      "item": "Mid-Autumn Festival",
+      "category": "sh",
+      "amount": 168
     }
   ],
   "meta": {
-    "lastModified": "2026-09-04T14:20:43.050Z"
+    "lastModified": "2026-09-30T16:46:25.484Z"
   }
 }
