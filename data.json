@@ -1450,9 +1450,16 @@
       "item": "Statutory Holiday Bonus",
       "category": "sh",
       "amount": 168
+    },
+    {
+      "id": 1793693194957,
+      "date": "2026-10-01",
+      "item": "Statutory Holiday Bonus",
+      "category": "sh",
+      "amount": 168
     }
   ],
   "meta": {
-    "lastModified": "2026-10-31T15:53:08.165Z"
+    "lastModified": "2026-11-03T08:06:34.957Z"
   }
 }
