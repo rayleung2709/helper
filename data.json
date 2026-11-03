@@ -1408,9 +1408,51 @@
       "item": "Working on a Holiday",
       "category": "buyout",
       "amount": 168
+    },
+    {
+      "id": 1793461566306,
+      "date": "2026-10-31",
+      "item": "Salary for October",
+      "category": "salary",
+      "amount": 5100
+    },
+    {
+      "id": 1793461663332,
+      "date": "2026-10-01",
+      "item": "Salary Advanced for October (paid on 30.9.2026)",
+      "category": "advance",
+      "amount": 3000
+    },
+    {
+      "id": 1793461959817,
+      "date": "2026-10-04",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 1793461971921,
+      "date": "2026-10-11",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 1793461978558,
+      "date": "2026-10-25",
+      "item": "Working on a Holiday",
+      "category": "buyout",
+      "amount": 168
+    },
+    {
+      "id": 1793461988165,
+      "date": "2026-10-19",
+      "item": "Statutory Holiday Bonus",
+      "category": "sh",
+      "amount": 168
     }
   ],
   "meta": {
-    "lastModified": "2026-09-30T16:46:25.484Z"
+    "lastModified": "2026-10-31T15:53:08.165Z"
   }
 }
